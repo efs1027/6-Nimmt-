@@ -1,1 +1,1 @@
-print('hello python & git')
+print('FUCK the wifi')
