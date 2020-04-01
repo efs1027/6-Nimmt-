@@ -1,0 +1,132 @@
+第1~10行:
+「
+1.  # -*- coding: utf-8 -*-
+2.  import pygame as pg, os, shutil, random
+3.
+4.  import data_Path.color as color, data_Path.image as image, data_Path.BGM as BGM
+5.
+6.  import GameOperate.one_player as OneP, GameOperate.four_player as FourP
+7.
+8.  from sys import exit
+9.
+10. from pygame.locals import *
+」
+
+第一行是設定編碼方式，其實蠻多餘的
+總而言之就是把一堆東西include進來就對了
+第2、8、10行是引用函式庫，os和shutil是關於檔案處理函式，random就是那個random
+其他行則是把封包裡面的東西引用進來
+
+##封包(package):
+
+    在講封包前要先講到模組，模組(module)是一個類似函式庫的東西，那裡面會有原始python沒
+    有提供的函式，但與函式庫不同的是，除了函式以外模組還提供了特別的物件和變數，讓使用者
+    需要用到的時候就不用自己寫程式定義，只要用"import"這個指令就可以使用這些東西，而我
+    們自己也可以定義模組
+
+    而封包就是存放各種檔案的地方，理論上是如此，但是這邊把封包當成存放內含程式、變數的檔
+    案的地方，目的是減少主程式的長度，讓主程式可讀性提升，而這樣的目的下這些封包裡面裝的
+    就是模組，但是我只是覺得用封包比模組簡單所以改用封包，因為封包只要在資料夾裡塞一個初
+    始化的檔案"__init__.py"就形成封包了，但模組還要先新增搜尋模組路徑(預設只有主程式所
+    在的資料夾和python自己的模組的資料夾)
+
+第8、10行是引用系統有關函式和pygame內建的物件
+
+##但是在寫這個的當下我就把封包改成模組了
+
+更新的程式碼大概長這樣:
+「
+1.  # -*- coding: utf-8 -*-
+2.  import pygame as pg, os, shutil, random, add_module_path as ModAdd
+3.  
+4.  ModAdd.path_append()
+5.  import color, image, BGM, one_player as OneP, four_player as FourP
+6.  
+7.  #import data_Path.color as color, data_Path.image as image, data_Path.BGM as BGM
+8.  
+9.  #import GameOperate.one_player as OneP, GameOperate.four_player as FourP
+10. 
+11. #終於搞懂模組了
+12. 
+13. from sys import exit
+14. 
+15. from pygame.locals import *
+」
+
+下次更新時第6~12行註解就會刪掉#已刪
+
+基本上第1、13~15行沒有變，主要變的是第2行跟新增的第4-5行
+
+第2行後面加的就是自定義的模組，這個模組只有一個函式
+
+「
+4.  def  path_append():
+5.      system.path.append('c:\\project\\data_Path')
+6.      system.path.append('c:\\project\\GameOperate')」
+
+基本上就是增加搜尋的模組路徑
+主程式第4行就是呼叫這個函式，下一行馬上import模組進來
+第一個模組式放這著代表顏色的變數，第二個是放圖片的路徑，第三個是放音樂的路徑，後面兩個放
+遊戲運算用的物件和函式
+
+第11~36行:
+「
+11. PlayerPath = ("C:\project\PlayerFile")
+12. RoomPath = ("C:\project\RoomFile")
+13. 
+14. pg.init()  # 初始化pygame
+15. pg.mixer.init()  # 初始化音樂
+16. 
+17. pg.mixer.music.set_volume(0.2)
+18. 
+19. pg.display.set_caption("誰是牛頭王")
+20. size = width, height = 1440, 720  # 設定視窗大小
+21. screen = pg.display.set_mode(size)  # 顯示視窗
+22. 
+23. bg = pg.Surface(screen.get_size())
+24. bg = bg.convert()
+25. 
+26. #標題畫面用的圖片
+27. title_sence = pg.image.load(image.title_sence)#標題畫面背景
+28. title_sence.convert()
+29. 
+30. #音樂選單的背景
+31. SoundMenu = pg.Surface(image.SoundMenuSize)
+32. SoundMenu = SoundMenu.convert()
+33. 
+34. #選擇模式的背景
+35. ModeMenu = pg.Surface(image.ModeMenuSize)
+36. ModeMenu = ModeMenu.convert()
+」
+
+第11、12行是設定基礎的玩家和房間檔案的路徑，程式開始之後會加上專屬於該玩家的檔案路徑
+第14、15行如同註解，是pygame本身和音樂的初始化，如果不寫就會跑不了
+第17行是設定音量，設定的變數範圍限制在1~0之間
+第19~21行分別為設定視窗名稱、視窗大小與顯示視窗並把回傳的常數存為變數，以供後面把背景
+貼在上面
+第23、24行在新增一個平面物件bg，要給予的變數為該平面的大小，括號裡的函式會回傳視窗大小，這
+個才是主要的背景，之後還會讓各種畫布貼在上面
+注意，每個平面和圖片物件在定義之後要做convert的動作，儘管不做也行，但是這可以讓速度變得比
+較快
+第27、28行用於載入標題畫面的背景圖片，也就是image資料夾的title_sence.jpg
+第31~36行都是在定義畫布，一個是音樂選單，另一個則是模式選單，如附圖一、二
+
+第38~41行:
+「
+38. card_base = []
+39. 
+40. for i in range(1, 105, 1):
+41.     card_base.append(i)
+」
+
+這或許就是這堆程式碼裡最簡單的部分了
+這就是用for迴圈建立一個牌庫list以供之後洗牌發牌用
+
+第43~188行:
+
+老實說我真的不想打了，好多行要標記
+要看全程式碼的話就自己用記事本開main.py
+
+首先我要先解釋一個概念，就是物件導向，如果要在程式設計這條路上走下去，就遲早要了解這個概念
+首先是物件導向最基礎的概念「類別」(class)
+class是物件導向最基礎的資料類型，以class定義的就是物件(object)
