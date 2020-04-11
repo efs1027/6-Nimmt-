@@ -8,9 +8,13 @@
 import pygame as pg, random
 import color as colors, image as image
 import socketio
-address = 'http://25.72.61.125:8070/'
-sio = socketio.Client()
-sio.connect(address)
+
+try:
+    address = 'http://25.72.61.125:8070/'
+    sio = socketio.Client()
+    sio.connect(address)
+except:
+    pass
 
 data = {}
 
@@ -584,6 +588,7 @@ def play():
         sc.blit(name_text, (625, 100 + 100*result.index(name)))
         for n in range(0, name[0]+1):
             score_text = process_text.render(str(n), True, colors.WHITE)
+            score_rect.blit(table1.desk, (0, 0))
             sc.blit(score_rect, (825, 100 + 100*result.index(name)))
             sc.blit(score_text, (825, 100 + 100*result.index(name)))
             pg.time.delay(25)
