@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+#http://25.72.61.125:8070/
 import pygame as pg, os, shutil, random, add_module_path as ModAdd
 
 ModAdd.path_append()
@@ -14,7 +15,7 @@ RoomPath = ("C:\project\RoomFile")
 pg.init()  # 初始化pygame
 pg.mixer.init()  # 初始化音樂
 
-pg.mixer.music.set_volume(0.0)
+pg.mixer.music.set_volume(0.2)
 
 pg.display.set_caption("誰是牛頭王")
 size = width, height = 1440, 720  # 設定視窗大小
@@ -144,10 +145,9 @@ class System:
                 if SelectMenu.Start.isOver() and SelectMenu.show:
                     if SelectMenu.One:
                         self.fade_to_game(1440, 720)
-                        SelectMenu.show = False
+                        result = SelectMenu.StartGame()
                         go = True
                         while go:
-                            result = OneP.play_easy()
                             if result == "close":
                                 self.DeletePlayerData()
                                 pg.quit()# 退出pygame
@@ -157,14 +157,23 @@ class System:
                                 self.fade_to_title(1440, 720)
                             if result == "again":
                                 self.fade_to_game(1440, 720)
+                                result = SelectMenu.StartGame()
                     else:
                         self.fade_to_game(1440, 720)
                         SelectMenu.show = False
-                        self.AddPlayerToRoom(self.SearchRoom())
-                        FourP.play()
-                        if self.PlayerNum_in_Room == 1:
-                            self.DeleteRoomData()
-                    return False
+                        result = SelectMenu.StartGame()
+                        go = True
+                        while go:
+                            if result == "close":
+                                self.DeletePlayerData()
+                                pg.quit()# 退出pygame
+                                exit()
+                            if result == "back":
+                                go = False
+                                self.fade_to_title(1440, 720)
+                            if result == "again":
+                                self.fade_to_game(1440, 720)
+                                result = SelectMenu.StartGame()
                 elif Start_Game.isOver() and SelectMenu.show == False:
                     SelectMenu.ShowMenu()
                 elif SelectMenu.isOver() == False and SelectMenu.show:
@@ -416,14 +425,16 @@ class ModeSelectMenu(Menu):
             self.Four = False
     
     def StartGame(self):
+        self.show = False
         if self.One:
-            OneP.play_easy()
+            return OneP.play_easy()
         if self.Four:
             FourP.play()
     
 OperateSystem = System()
 def main():
     #建立標題畫面的按鈕
+    OperateSystem.fade_to_title(1440, 720)
     Start_Game = MenuButton(bg, image.start_game, image.start_game_up, image.start_game_position, (0,0))
     Close_Game = MenuButton(bg, image.close_game, image.close_game_up, image.close_game_position, (0,0))
     BGMMenuOpen = MenuButton(bg, image.music_bottom, image.music_bottom, image.music_position, (0,0))

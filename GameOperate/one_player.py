@@ -98,7 +98,7 @@ class computer:#電腦類別
         new_bg_hand = pg.transform.rotate(self.bg_hand, 90*int(num[-1]))
         sc.blit(new_bg_hand, SITE)
         if card != False and display != True:#出牌階段延遲，亮牌階段不延遲
-            pg.time.delay(50)#500
+            pg.time.delay(500)#500
 
     def draw_hand(self, gradually):#手牌
         SITE = (0,0)#絕對座標
@@ -316,7 +316,7 @@ class table:#桌子類別
                 sc.blit(self.bg_table, (320, 200))
                 if gradually:
                     pg.display.update() 
-                    pg.time.delay(10) #40
+                    pg.time.delay(40) #40
 
 class MenuButton:#按鈕類
 
@@ -563,10 +563,13 @@ def play_easy():
                 return "close"
             if event.type == pg.MOUSEBUTTONUP:
                 if again.isOver() == True:
+                    pause = False
                     return "again"
                 if close.isOver() == True:
+                    pause = False
                     return "close"
                 if back.isOver() == True:
+                    pause = False
                     return "back"
         again.draw()
         close.draw()

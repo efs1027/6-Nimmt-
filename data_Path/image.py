@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 #標題畫面用的圖片
 title_sence = "C:/project/image/title_sence.jpg"#標題畫面背景位置
 desk = "C:/project/image/desk.jpg"#桌子

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>API_TEST</title>
+<style>
+.lis{
+    position: relative;
+}
+</style>
+    <script
+  src="http://code.jquery.com/jquery-3.4.1.min.js"
+  integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+  crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js" integrity="undefined" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.2/animate.min.css">
+      
+
+
+
+<script>
+
+function sendmsg(){
+    socket.emit("newmsg",document.getElementById("textbox").value);
+    console.log("SENT",document.getElementById("textbox").value);
+}
+
+function action(){
+    name=document.getElementById("box_name").value
+    card=document.getElementById("box_card").value
+    ac=document.getElementById("box_ac").value
+    dic={"name":name,"ac":ac,"card":card}
+    socket.emit("action",dic)
+
+}
+
+
+ip=location.host;
+console.log(ip)
+var socket= io(ip)
+socket.on("tablejson", function(data){
+    document.getElementById("table").innerHTML=JSON.stringify(data);
+    console.log(data);
+})
+
+socket.on("chat", function(data){
+    console.log(data);
+})
+
+socket.on("newmsg", function(data){
+    document.getElementById("chat").innerHTML+="<li class=\"lis\">"+data+"</li>"
+    document.getElementById("chat").scrollTop = document.getElementById("chat").scrollHeight;
+})
+
+function gettable(){
+    io.emit("tablejson","TT");
+}
+</script>
+</head>
+<body>
+    <a href="https://hackmd.io/@Hsiaofeng/HJFEBLQPU">API文件</a>
+    <div id="table"></div>
+    <button onclick="gettable()"></button>
+        <div id="chat" style="overflow: auto;height: 150px;width: 100%;">
+        </div>
+    <div>依序輸入玩家序號(0~3) 行為種類(1:出牌並放到facecard  2:把排放到base)   卡牌號碼(如果是行為(2)則填入base序號(0~3))</div>
+    <input id="box_name">
+    <input id="box_ac">
+    <input id="box_card">
+    <button onclick="action()">send</button>
+
+    <input id="textbox">
+    <button onclick="sendmsg()">send</button>
+    <img src="https://pixiv.cat/79254153.png" style="width: 100vw;">
+</body>
+</html>
