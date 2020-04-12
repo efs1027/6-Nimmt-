@@ -1,6 +1,6 @@
 """ 
 待修改問題：
-    結算畫面分數背景
+    新手教學
 尚未完成：
     更酷的特效!!!
 """
@@ -298,7 +298,6 @@ class table:#桌子類別
             col = self.list_group.index(lists)
             for card in lists: 
                 if card == com1.selected_card:
-                    print(turn)
                     com1.draw_hand(False)
                 if card == com2.selected_card:
                     com2.draw_hand(False)
@@ -398,7 +397,6 @@ def play_easy():
         table1 = table(list1, list2, list3, list4)
         #動畫
         # assign()
-        global turn 
         turn = 0
         process_font("發牌中", turn)
         com1.draw_hand(True)
@@ -532,7 +530,6 @@ def play_easy():
     Score_list = [player1.bull, com1.bull, com2.bull, com3.bull]
     result = []
     Score_list.sort()
-    print(Score_list)
     for score in Score_list:
         for i in range(0, 4, 1):
             if Score_Name[i][0] == score:
@@ -543,12 +540,12 @@ def play_easy():
     sc.blit(desk, (0, 0))
     for name in result:
         score_rect = pg.Surface((60, 60))
+        score_rect.blit(desk, (-825, -100-100*result.index(name)))
         name_text = process_text.render(str(name[1]), True, colors.WHITE)
         # score_text = process_text.render(str(name[0]), True, colors.WHITE)
         sc.blit(name_text, (625, 100 + 100*result.index(name)))
         for n in range(0, name[0]+1):
             score_text = process_text.render(str(n), True, colors.WHITE)
-            score.blit(table_desk, (-100, -100))
             sc.blit(score_rect, (825, 100 + 100*result.index(name)))
             sc.blit(score_text, (825, 100 + 100*result.index(name)))
             pg.time.delay(25)

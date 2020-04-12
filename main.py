@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #http://25.72.61.125:8070/
-import pygame as pg, os, shutil, random, add_module_path as ModAdd
+import pygame as pg, os, shutil, random, add_module_path as ModAdd, uuid
 
 ModAdd.path_append()
 import color, image, BGM, one_player as OneP, four_player as FourP
@@ -143,9 +143,10 @@ class System:
                 if SelectMenu.Four and SelectMenu.OnePlayerButton.isOver() and SelectMenu.show:
                     SelectMenu.ChangeMode()
                 if SelectMenu.Start.isOver() and SelectMenu.show:
+                    usrid = str(uuid.uuid1())
                     if SelectMenu.One:
                         self.fade_to_game(1440, 720)
-                        result = SelectMenu.StartGame()
+                        result = SelectMenu.StartGame(usrid)
                         go = True
                         while go:
                             if result == "close":
@@ -161,7 +162,7 @@ class System:
                     else:
                         self.fade_to_game(1440, 720)
                         SelectMenu.show = False
-                        result = SelectMenu.StartGame()
+                        result = SelectMenu.StartGame(usrid)
                         go = True
                         while go:
                             if result == "close":
@@ -322,10 +323,10 @@ class BackGrondMusicMenu(Menu):#BGM操作類
 
     song = 0
     MenuP = 2
-    Volume = 0.0
+    Volume = 0.2
     show = False
     Silented = False
-    SilentedMenuP = 0
+    SilentedMenuP = 2
 
     def __init__(self, bg, position, size, MusicList, MusicStart, MenuBackground, MusicName):
         self.bg = bg
@@ -424,12 +425,12 @@ class ModeSelectMenu(Menu):
             self.One = True
             self.Four = False
     
-    def StartGame(self):
+    def StartGame(self, ID):
         self.show = False
         if self.One:
             return OneP.play_easy()
         if self.Four:
-            FourP.play()
+            FourP.play(ID)
     
 OperateSystem = System()
 def main():

@@ -10,18 +10,29 @@ import color as colors, image as image
 import socketio
 
 try:
-    address = 'http://25.72.61.125:8070/'
+    address = 'http://25.31.4.252:8070/'
     sio = socketio.Client()
     sio.connect(address)
 except:
     pass
 
 data = {}
+PlayerID = "NULL"
 
 @sio.event
 def tablejson(Input):
     global data
+    global PlayerID
     data = Input
+    if PlayerID != "NULL":
+        a = data["score"].pop(PlayerID)
+        data["score"].append(a)
+        b = data["hand"].pop(PlayerID)
+        data["hand"].append(b)
+        c = data["facecard"].pop(PlayerID)
+        data["facecard"].append(c)
+        d = data["choosebase"].pop(PlayerID)
+        data["choosebase"].append(d)
     print(data)
 
 pg.init()
@@ -44,6 +55,12 @@ process_text = pg.font.Font("Chinese.ttf", 24)#24
 
 card_base = [1]
 card_dict = {1 : 1} 
+
+def AntiCrash():
+    for event in pg.event.get():
+        if event == pg.QUIT:
+            pg.quit()
+            exit()
 
 #卡牌屬性目錄設定
 for i in range (2, 105, 1):
@@ -155,8 +172,8 @@ class computer:#電腦類別
 
 class player:#玩家類別
     
-    def __init__(self, card):#設定基本資料
-        self.ID = 3
+    def __init__(self, card, ID):#設定基本資料
+        self.ID = ID
         self.name = "player"#設定玩家名稱
         self.card = card#設定玩家擁有的牌
         self.selected_card = 0 # 被選中的牌初始化
@@ -172,7 +189,7 @@ class player:#玩家類別
         else:
             card_list = table1.list_give_player(list_num, card_num)#由函數取得該列並置換排頭
             self.point_card.extend(card_list)#加進持有的分數牌中
-        sio.emit('action', {"name":3, "ac":3, "card":list_num})
+        sio.emit('action', {"name":self.ID, "ac":3, "card":list_num})
         table1.bg_table = pg.Surface((800, 320))
         table1.bg_table.blit(table_desk, (0, 0))
         table1.draw_table(False)
@@ -186,17 +203,19 @@ class player:#玩家類別
     def select_card(self, a):#選擇卡片
         for event in pg.event.get():#遍歷所有事件
             if a == "NULL":
-                self.draw_hand(False)
-                self.draw_select(self.card_num)
                 if event.type == pg.KEYDOWN:#查看所有按鍵事件
                     if event.key == pg.K_LEFT and self.card_num != 0:#按左鍵的時候，選取左一個的牌
                         self.card_num-=1
+                        self.draw_hand(False)
+                        self.draw_select(self.card_num)
                     if event.key == pg.K_RIGHT and self.card_num != len(self.card)-1:#按右鍵的時候，選取右一個的牌 # 這裡要-1
                         self.card_num+=1
+                        self.draw_hand(False)
+                        self.draw_select(self.card_num)
                     if event.key == pg.K_KP_ENTER or event.key == pg.K_SPACE:#按Space時 
                         self.selected_card = self.card[self.card_num]
                         #從手牌list中移除選擇的牌
-                        sio.emit('action',{"name":3,"ac":1,"card":self.selected_card})
+                        sio.emit('action',{"name":self.ID,"ac":1,"card":self.selected_card})
                         self.card.pop(self.card_num)
                         self.card_num = 0
                         self.draw_hand(False)
@@ -300,12 +319,17 @@ class table:#桌子類別
         self.list_group = [list1, list2, list3, list4]#把四列都放入一個list中 ## 雙層list
         self.bg_table = pg.Surface((800, 320))
         
-    def place_card(self, list_num, card_num, ThisComputer):#玩家放置牌
+    def place_card(self, list_num, card_num, ThisComputer, OtherNum):#玩家放置牌
         global data
-        facecard = data["facecard"]
-        self.list_group[list_num].append(card_num)
+        global PlayerID
+        num = OtherNum.split("com", 1)
         if ThisComputer:
-            sio.emit('action', {"name":facecard.index(card_num), "ac":2, "card":list_num})
+            self.list_group[list_num].append(card_num)
+            sio.emit('action', {"name":PlayerID, "ac":2, "card":list_num})
+        else:
+            while data["choosebase"][int(num[-1])] == "Null":
+                AntiCrash()
+            self.list_group[list_num].append(card_num)
 
     def list_give_player(self, list_num, card):#玩家收回一列
         give = self.list_group[list_num]#儲存該列資訊
@@ -320,7 +344,6 @@ class table:#桌子類別
             col = self.list_group.index(lists)
             for card in lists: 
                 if card == com1.selected_card:
-                    print(turn)
                     com1.draw_hand(False)
                 if card == com2.selected_card:
                     com2.draw_hand(False)
@@ -389,7 +412,9 @@ def assign():#發牌
             pg.draw.rect(sc, colors.WHITE, [centerx+ds*n*2-7, centery, 60, 44])#right
             pg.display.update()
 
-def play():
+def play(ID):
+    global data
+    global PlayerID
     sc.blit(desk, (0, 0))
     start_stage = True
     game_keep_going = False
@@ -397,8 +422,16 @@ def play():
     place_stage = False
     #開始遊戲時的設定
     if start_stage:
+        turn = 0
+        sio.emit('login',ID)
+        while len(data["players"]) < 4:
+            AntiCrash()
+            process_font("等待其他玩家", turn)
+            if ID in data["players"]:
+                PlayerID = data["players"].index(ID)
         #發牌給電腦及玩家
-        global data
+        numlist = [0, 1, 2, 3]
+        numlist.remove(PlayerID)
         hands = data["hand"]
         player_card = hands[3]
         player_card.sort()
@@ -407,15 +440,13 @@ def play():
         com1 = computer("1", hands[0])
         com2 = computer("2", hands[1])
         com3 = computer("3", hands[2])
-        player1 = player(player_card)
+        player1 = player(player_card, PlayerID)
         #翻開四張牌擺在桌上
         listgroup = data["base"]
         #設置桌面數值
         table1 = table(listgroup[0], listgroup[1], listgroup[2], listgroup[3])
         #動畫
         # assign()
-        global turn 
-        turn = 0
         process_font("發牌中", turn)
         com1.draw_hand(True)
         com2.draw_hand(True)
@@ -457,12 +488,13 @@ def play():
             com1.draw_throw(sorted_cards_num[0], True)
             com2.draw_throw(sorted_cards_num[1], True)
             com3.draw_throw(sorted_cards_num[2], True)
+            pg.display.update()
             #變換階段變數
             select_stage = False
             place_stage = True
             #建立可以用卡的數字檢索出的玩家的dict
             everyone_selected_card = {sorted_cards_num[0] : "com1", sorted_cards_num[1] : "com2", sorted_cards_num[2] : "com3", sorted_cards_num[3] : "player"}
-            #把四張卡存入list後排序
+            #把四張卡排序
             sorted_cards_num.sort()
         if place_stage:#放置階段
             for card in sorted_cards_num:#由小而大看
@@ -488,7 +520,7 @@ def play():
                             closest = distanse[i]
                             closest_num = i
                     ThisComputer = everyone_selected_card[card] == "player"
-                    table1.place_card(closest_num, card, ThisComputer)#放置
+                    table1.place_card(closest_num, card, ThisComputer, everyone_selected_card[card])#放置
                     table1.draw_table(True)
                     process_font("自動排序中", turn)
                     pg.display.update()
@@ -510,7 +542,6 @@ def play():
                         pg.display.update()
                 #若全部小於
                 else:
-                    facecard = data["facecard"]
                     #若是玩家就自己選
                     if everyone_selected_card[card] == "player": # dict 改成 everyone_selected_card
                         process_font("請選擇一排收回", turn)
@@ -520,30 +551,21 @@ def play():
                     #若不是玩家則隨機選擇
                     else:
                         if everyone_selected_card[card] == "com1":
-                            while facecard[0] == card:
-                                for event in pg.event.get():
-                                    if event.type == pg.QUIT:
-                                        pg.quit()# 退出pygame
-                                        exit()
-                            list_num = facecard[0]
+                            while data["choosebase"][0] == "NULL":
+                                AntiCrash()
+                            list_num = data["choosebase"][0]
                             com1.get_card(table1, list_num)
                             com1.count_bull()
                         if everyone_selected_card[card] == "com2":
-                            while facecard[1] == card:
-                                for event in pg.event.get():
-                                    if event.type == pg.QUIT:
-                                        pg.quit()# 退出pygame
-                                        exit()
-                            list_num = facecard[1]
+                            while data["choosebase"][1] == "NULL":
+                                AntiCrash()
+                            list_num = data["choosebase"][1]
                             com2.get_card(table1, list_num)
                             com2.count_bull()
                         if everyone_selected_card[card] == "com3":
-                            while facecard[2] == card:
-                                for event in pg.event.get():
-                                    if event.type == pg.QUIT:
-                                        pg.quit()# 退出pygame
-                                        exit()
-                            list_num = facecard[2]
+                            while data["choosebase"][2] == "NULL":
+                                AntiCrash()
+                            list_num = data["choosebase"][2]
                             com3.get_card(table1, list_num)
                             com3.count_bull()
                         table1.draw_table(True)
@@ -553,7 +575,7 @@ def play():
             select_stage = True
             turn+=1
 
-        #第10回合結束時，結束遊戲         
+        #第10回合結束時，結束遊戲
         if turn == 11:
             table1.draw_table(True)
             pg.display.update()
@@ -588,7 +610,6 @@ def play():
         sc.blit(name_text, (625, 100 + 100*result.index(name)))
         for n in range(0, name[0]+1):
             score_text = process_text.render(str(n), True, colors.WHITE)
-            score_rect.blit(table1.desk, (0, 0))
             sc.blit(score_rect, (825, 100 + 100*result.index(name)))
             sc.blit(score_text, (825, 100 + 100*result.index(name)))
             pg.time.delay(25)

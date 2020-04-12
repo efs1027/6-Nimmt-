@@ -141,4 +141,3 @@ while playing: # 第二階段:遊戲進行
     draw_sel(l)
     pg.display.update()
 pg.quit()
-

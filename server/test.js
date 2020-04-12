@@ -3,6 +3,7 @@ var server = require('http').Server(app);
 var io = require('socket.io')(server);
 
 server.listen(8070);
+console.log("server is running!");
 // WARNING: app.listen(80) will NOT work here!
 
 app.get('/', function (req, res) {
@@ -20,7 +21,9 @@ var messages = [];
 cardpool=[];
 table={
 "status":1,
+"players":[],
 "nowturn":0,
+"choosebase":["NULL","NULL","NULL","NULL"],
 "score":[[],[],[],[]],
 "hand":[[],[],[],[]],
 "base":[[],[],[],[]],
@@ -42,11 +45,16 @@ for(i=0;i<4;i++){
 
 //BASE
 TESTMSG="8888";
+loginnum=0;
 io.on('connection', function(socket){
     //初始化...
     console.log("A user connected.");
-    io.emit("allMessage",messages);
-    io.emit("chat","其實張育誠是絆愛廚");
+    //io.emit("allMessage",messages);
+    socket.on("login",function(obj){
+      socket.emit("login",loginnum);
+      loginnum+=1;
+  })
+    io.emit("chat","小豐泉婆霞");
     io.emit("tablejson",table);
 
     socket.on("tablejson",function(obj){
@@ -58,6 +66,12 @@ io.on('connection', function(socket){
     socket.on("newmsg", function(obj){
       io.emit("newmsg",obj)
   })
+    socket.on("login", function(obj){
+      if (table.players.length<4){
+      table.players.push(obj)
+	  io.emit("tablejson",table);
+      }
+    })
     socket.on('sendMessage',function(obj){
       //get all message!
       messages.push(obj);
@@ -83,6 +97,7 @@ io.on('connection', function(socket){
             io.emit('newmsg', msg);
 
               if(table.facecard.indexOf(0)==-1){
+                table.choosebase=["NULL","NULL","NULL","NULL"];
                 table.status=2;
               }
           }
@@ -92,10 +107,11 @@ io.on('connection', function(socket){
         }
       }
       if (table.status==2){
-        if(ac==2&&name>=0 && name<=3 && card>=0 && card<=3 &&table.facecard[name]!=null){
+        if(ac==2&&name>=0 && name<=3 && card>=0 && card<=3 &&table.facecard[name]!=0){
           table.base[card].push(table.facecard[name]);
-          table.facecard[name]=0;    
-          console.log(table.facecard);
+          table.choosebase[name]=card;
+          msg=name+"將牌號"+table.facecard[name]+"放入base"+card;
+          table.facecard[name]=0;
         }
       }
 
@@ -115,9 +131,8 @@ io.on('connection', function(socket){
       
 
       if(ac==3&&name>=0 && name<=3 && card>=0 && card<=3){
-        console.log("DE1");
+		table.choosebase[name]=card;
         for(i=0;i<=table.base[card].length;i++){
-          console.log("DE2");
           table.score[name].push(table.base[card].shift());
         }
         table.base[card].push(table.facecard[name]);
