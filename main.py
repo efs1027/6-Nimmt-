@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-#http://25.72.61.125:8070/
+#呂宗霖:http://25.72.61.125:8070/
+#張育誠:http://25.31.4.252:8070/
 import pygame as pg, os, shutil, random, add_module_path as ModAdd, uuid
 
 ModAdd.path_append()
@@ -15,7 +16,7 @@ RoomPath = ("C:\project\RoomFile")
 pg.init()  # 初始化pygame
 pg.mixer.init()  # 初始化音樂
 
-pg.mixer.music.set_volume(0.0)
+pg.mixer.music.set_volume(0.2)
 
 pg.display.set_caption("誰是牛頭王")
 size = width, height = 1440, 720  # 設定視窗大小
