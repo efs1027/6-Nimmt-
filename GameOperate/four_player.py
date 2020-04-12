@@ -327,7 +327,7 @@ class table:#桌子類別
             self.list_group[list_num].append(card_num)
             sio.emit('action', {"name":PlayerID, "ac":2, "card":list_num})
         else:
-            while data["choosebase"][int(num[-1])] == "Null":
+            while data["choosebase"][int(num[-1])-1] == "NULL":
                 AntiCrash()
             self.list_group[list_num].append(card_num)
 
@@ -485,6 +485,7 @@ def play(ID):
                 if player1.selected_card != 0 and sorted_cards_num[3] == "NULL":
                     sorted_cards_num[3] = player1.selected_card
                     count+=1
+                    process_font("等待其他玩家出牌", turn)
             com1.draw_throw(sorted_cards_num[0], True)
             com2.draw_throw(sorted_cards_num[1], True)
             com3.draw_throw(sorted_cards_num[2], True)
@@ -550,6 +551,7 @@ def play(ID):
                         pg.display.update()
                     #若不是玩家則隨機選擇
                     else:
+                        process_font("其他玩家選擇一排收回", turn)
                         if everyone_selected_card[card] == "com1":
                             while data["choosebase"][0] == "NULL":
                                 AntiCrash()
