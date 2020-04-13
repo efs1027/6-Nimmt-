@@ -42,12 +42,6 @@ for i in range(1, 105, 1):
 
 class System:
 
-    def __init__(self):
-        self.First_play = True
-
-    def Firstplay(self):
-        self.First_play = False
-
     def Title(self, Start_Game, Close_Game, BGMMenuOpen, BGMOption, SelectMenu):
         for event in pg.event.get():
             if event.type == pg.QUIT:
