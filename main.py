@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 #呂宗霖:http://25.72.61.125:8070/
 #張育誠:http://25.31.4.252:8070/
+#學校筆電:http://25.21.173.164:8070/
 import pygame as pg, os, shutil, random, add_module_path as ModAdd, uuid
 
 ModAdd.path_append()
@@ -10,13 +11,12 @@ from sys import exit
 
 from pygame.locals import *
 
-PlayerPath = ("C:\project\PlayerFile")
-RoomPath = ("C:\project\RoomFile")
+
 
 pg.init()  # 初始化pygame
 pg.mixer.init()  # 初始化音樂
 
-pg.mixer.music.set_volume(0.0)
+pg.mixer.music.set_volume(0.2)
 
 pg.display.set_caption("誰是牛頭王")
 size = width, height = 1440, 720  # 設定視窗大小
@@ -37,9 +37,6 @@ SoundMenu = SoundMenu.convert()
 ModeMenu = pg.Surface(image.ModeMenuSize)
 ModeMenu = ModeMenu.convert()
 
-#新手教學(NT)的背景、   問號
-
-
 card_base = []
 
 for i in range(1, 105, 1):
@@ -49,80 +46,17 @@ class System:
 
     def __init__(self):
         self.First_play = True
-        self.CreatePlayerData()
 
     def Firstplay(self):
         self.First_play = False
 
-    def CreatePlayerData(self):
-        files = os.listdir(PlayerPath)
-        self.PlayerNum = len(files) + 1
-        self.filename = PlayerPath + '\PlayerData' + str(self.PlayerNum)
-        pfile = open(self.filename, 'w')
-        pfile.writelines([str(self.PlayerNum) + "\n", "\n", "\n", "\n"])#第一排為玩家名、第二排為玩家選的牌、第三排為玩家選的列、第四牌為玩家牛頭數
-        pfile.close()
-
-    def SearchRoom(self):
-        if len(os.listdir(RoomPath)) == 0:
-            return self.CreateRoomData()
-        else:
-            Roomlist = []
-            for RoomName in os.listdir(RoomPath):
-                Roomlist.append(os.path.join(RoomPath, RoomName))
-            for Room in Roomlist:
-                if len(os.listdir(Room)) < 5:
-                    return Room
-            return self.CreateRoomData()
-
-    def CreateRoomData(self):
-        Rooms = os.listdir(RoomPath)
-        RoomNum = len(Rooms) + 1
-        RoomName = RoomPath + '\RoomData' + str(RoomNum)
-        os.mkdir(RoomName)
-        RoomDataName = RoomName + '\BasicData'
-        rfile = open(RoomDataName, 'w')
-        random.shuffle(card_base)
-        #發牌給四位玩家
-        player1_card = card_base[1 : 11 : 1]
-        player2_card = card_base[11 : 21 : 1]
-        player3_card = card_base[21 : 31 : 1]
-        player4_card = card_base[31 : 41 : 1]
-        player1_card.sort()
-        player2_card.sort()
-        player3_card.sort()
-        player4_card.sort()
-        #翻開四張牌擺在桌上
-        list1 = card_base[41 : 42 : 1]
-        list2 = card_base[42 : 43 : 1]
-        list3 = card_base[43 : 44 : 1]
-        list4 = card_base[44 : 45 : 1]
-        Datas = [player1_card, player2_card, player3_card, player4_card, list1, list2, list3, list4]
-        Output = []
-        for datas in Datas:
-            o = str(datas)
-            Output.append(o[1:-1:1]+ "\n")
-        rfile.writelines(Output)
-        return RoomName
-
-    def AddPlayerToRoom(self, RoomName):
-        self.RoomName = RoomName
-        self.PlayerNum_in_Room = len(os.listdir(self.RoomName))
-        shutil.copyfile(self.filename, self.RoomName + '\PlayerData' + str(self.PlayerNum_in_Room)) 
-
-    def DeletePlayerData(self):
-        os.remove(self.filename)
-
-    def DeleteRoomData(self):
-        shutil.rmtree(self.RoomName)
-
-    def Title(self, Start_Game, Close_Game, BGMMenuOpen, BGMOption, SelectMenu, qui):
+    def Title(self, Start_Game, Close_Game, BGMMenuOpen, BGMOption, SelectMenu):
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 pg.quit()# 退出pygame
                 exit()
             if event.type == pg.MOUSEBUTTONUP:
                 if Close_Game.isOver() and SelectMenu.show == False:
-                    self.DeletePlayerData()
                     pg.quit()# 退出pygame
                     exit()
                 if BGMMenuOpen.isOver():
@@ -154,7 +88,6 @@ class System:
                         go = True
                         while go:
                             if result == "close":
-                                self.DeletePlayerData()
                                 pg.quit()# 退出pygame
                                 exit()
                             if result == "back":
@@ -162,7 +95,7 @@ class System:
                                 self.fade_to_title(1440, 720)
                             if result == "again":
                                 self.fade_to_game(1440, 720)
-                                result = SelectMenu.StartGame()
+                                result = SelectMenu.StartGame(usrid)
                     else:
                         self.fade_to_game(1440, 720)
                         SelectMenu.show = False
@@ -170,7 +103,6 @@ class System:
                         go = True
                         while go:
                             if result == "close":
-                                self.DeletePlayerData()
                                 pg.quit()# 退出pygame
                                 exit()
                             if result == "back":
@@ -178,7 +110,7 @@ class System:
                                 self.fade_to_title(1440, 720)
                             if result == "again":
                                 self.fade_to_game(1440, 720)
-                                result = SelectMenu.StartGame()
+                                result = SelectMenu.StartGame(usrid)
                 elif Start_Game.isOver() and SelectMenu.show == False:
                     SelectMenu.ShowMenu()
                 elif SelectMenu.isOver() == False and SelectMenu.show:
@@ -188,7 +120,6 @@ class System:
         Start_Game.draw()
         Close_Game.draw()
         BGMMenuOpen.draw()
-        qui.draw()
         screen.blit(bg, (0,0))
         if BGMOption.show:
             BGMOption.ShowMenu()
@@ -436,8 +367,7 @@ class ModeSelectMenu(Menu):
             return OneP.play_easy()
         if self.Four:
             FourP.play(ID)
-
-
+    
 OperateSystem = System()
 def main():
     #建立標題畫面的按鈕
@@ -445,12 +375,11 @@ def main():
     Start_Game = MenuButton(bg, image.start_game, image.start_game_up, image.start_game_position, (0,0))
     Close_Game = MenuButton(bg, image.close_game, image.close_game_up, image.close_game_position, (0,0))
     BGMMenuOpen = MenuButton(bg, image.music_bottom, image.music_bottom, image.music_position, (0,0))
-    qui = MenuButton(bg, image.qui, image.qui, (900, 100), (0, 0))
     BGMOption = BackGrondMusicMenu(SoundMenu, image.SoundMenuPosition, image.SoundMenuSize, BGM.MusicList, BGM.MusicStart, image.MusicMenu, image.MusicName)
     SelectMenu = ModeSelectMenu(ModeMenu, image.ModeMenuPosition, image.ModeMenuSize, image.OP, image.FP)
     BGMOption.PlayBGM()
     while True:
-        while OperateSystem.Title(Start_Game, Close_Game, BGMMenuOpen, BGMOption, SelectMenu, qui):
+        while OperateSystem.Title(Start_Game, Close_Game, BGMMenuOpen, BGMOption, SelectMenu):
             pg.display.update()
 
 main()

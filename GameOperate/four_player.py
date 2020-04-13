@@ -10,15 +10,26 @@ import color as colors, image as image
 import socketio
 
 try:
-    address = 'http://25.31.4.252:8070/'
+    address = 'http://25.21.173.164:8070/'
     sio = socketio.Client()
     sio.connect(address)
 except:
     pass
 
 data = {}
+error = False
 PlayerID = "NULL"
 
+@sio.event
+def connect():
+    global error
+    error = False
+    print("I'm connected!")
+@sio.event
+def connect_error():
+    global error
+    error = True
+    print("The connection failed!")
 @sio.event
 def tablejson(Input):
     global data
@@ -206,12 +217,8 @@ class player:#玩家類別
                 if event.type == pg.KEYDOWN:#查看所有按鍵事件
                     if event.key == pg.K_LEFT and self.card_num != 0:#按左鍵的時候，選取左一個的牌
                         self.card_num-=1
-                        self.draw_hand(False)
-                        self.draw_select(self.card_num)
                     if event.key == pg.K_RIGHT and self.card_num != len(self.card)-1:#按右鍵的時候，選取右一個的牌 # 這裡要-1
                         self.card_num+=1
-                        self.draw_hand(False)
-                        self.draw_select(self.card_num)
                     if event.key == pg.K_KP_ENTER or event.key == pg.K_SPACE:#按Space時 
                         self.selected_card = self.card[self.card_num]
                         #從手牌list中移除選擇的牌
@@ -221,6 +228,8 @@ class player:#玩家類別
                         self.draw_hand(False)
                         self.draw_throw(self.selected_card)
                         pg.display.update()
+        self.draw_hand(False)
+        self.draw_select(self.card_num)
         pg.display.update()
                     
     def select_list(self, table, card_num):#收回卡片#card_num是玩家出的牌
@@ -322,12 +331,15 @@ class table:#桌子類別
     def place_card(self, list_num, card_num, ThisComputer, OtherNum):#玩家放置牌
         global data
         global PlayerID
+        global error
         num = OtherNum.split("com", 1)
         if ThisComputer:
+            while error:
+                AntiCrash()
             self.list_group[list_num].append(card_num)
             sio.emit('action', {"name":PlayerID, "ac":2, "card":list_num})
         else:
-            while data["choosebase"][int(num[-1])-1] == "NULL":
+            while data["choosebase"][int(num[-1])-1] == "NULL" or error:
                 AntiCrash()
             self.list_group[list_num].append(card_num)
 
@@ -415,6 +427,7 @@ def assign():#發牌
 def play(ID):
     global data
     global PlayerID
+    global error
     sc.blit(desk, (0, 0))
     start_stage = True
     game_keep_going = False
@@ -470,7 +483,7 @@ def play(ID):
             sorted_cards_num = ["NULL", "NULL", "NULL", "NULL"]
             count = 0
             player1.selected_card = 0
-            while count != 4:
+            while count != 4 or error:
                 AllThrow = data["facecard"]
                 if AllThrow[0] != 0 and sorted_cards_num[0] == "NULL":
                     sorted_cards_num[0] = com1.select_card()
@@ -546,6 +559,8 @@ def play(ID):
                     #若是玩家就自己選
                     if everyone_selected_card[card] == "player": # dict 改成 everyone_selected_card
                         process_font("請選擇一排收回", turn)
+                        while error:
+                            AntiCrash()
                         player1.select_list(table1, card)
                         table1.draw_table(True)
                         pg.display.update()
@@ -553,18 +568,18 @@ def play(ID):
                     else:
                         process_font("其他玩家選擇一排收回", turn)
                         if everyone_selected_card[card] == "com1":
-                            while data["choosebase"][0] == "NULL":
+                            while data["choosebase"][0] == "NULL" or error:
                                 AntiCrash()
                             list_num = data["choosebase"][0]
                             com1.get_card(table1, list_num)
                             com1.count_bull()
-                        if everyone_selected_card[card] == "com2":
+                        if everyone_selected_card[card] == "com2" or error:
                             while data["choosebase"][1] == "NULL":
                                 AntiCrash()
                             list_num = data["choosebase"][1]
                             com2.get_card(table1, list_num)
                             com2.count_bull()
-                        if everyone_selected_card[card] == "com3":
+                        if everyone_selected_card[card] == "com3" or error:
                             while data["choosebase"][2] == "NULL":
                                 AntiCrash()
                             list_num = data["choosebase"][2]
@@ -600,7 +615,7 @@ def play(ID):
     print(Score_list)
     for score in Score_list:
         for i in range(0, 4, 1):
-            if Score_Name[i][0] == score:
+            if Score_Name[i][0] == score and Score_Name[i] not in result:
                 result.append(Score_Name[i])
     #印出
     process_text = pg.font.Font("Chinese.ttf", 48)#48
@@ -619,19 +634,23 @@ def play(ID):
     pg.display.update()
     again = MenuButton(sc, image.second_game, image.second_game_up, image.second_game_position, (0, 0))
     close = MenuButton(sc, image.close_game, image.close_game_up, image.end_position, (0, 0))
-    back = MenuButton(sc, image.back, image.back_up, image.back_position, (0, 0) )
+    back = MenuButton(sc, image.back, image.back_up, image.back_position, (0, 0))
     pause = True
     while pause:
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 return "close"
+                pause = False
             if event.type == pg.MOUSEBUTTONUP:
                 if again.isOver() == True:
                     return "again"
+                    pause = False
                 if close.isOver() == True:
                     return "close"
+                    pause = False
                 if back.isOver() == True:
                     return "back"
+                    pause = False
         again.draw()
         close.draw()
         back.draw()

@@ -532,7 +532,7 @@ def play_easy():
     Score_list.sort()
     for score in Score_list:
         for i in range(0, 4, 1):
-            if Score_Name[i][0] == score:
+            if Score_Name[i][0] == score and Score_Name[i] not in result:
                 result.append(Score_Name[i])
     #選擇後回傳結果
     #印出
@@ -559,6 +559,7 @@ def play_easy():
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 return "close"
+                pause = False
             if event.type == pg.MOUSEBUTTONUP:
                 if again.isOver() == True:
                     pause = False
