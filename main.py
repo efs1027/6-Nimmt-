@@ -11,8 +11,6 @@ from sys import exit
 
 from pygame.locals import *
 
-
-
 pg.init()  # 初始化pygame
 pg.mixer.init()  # 初始化音樂
 
