@@ -16,7 +16,7 @@ RoomPath = ("C:\project\RoomFile")
 pg.init()  # 初始化pygame
 pg.mixer.init()  # 初始化音樂
 
-pg.mixer.music.set_volume(0.2)
+pg.mixer.music.set_volume(0.0)
 
 pg.display.set_caption("誰是牛頭王")
 size = width, height = 1440, 720  # 設定視窗大小
@@ -36,6 +36,9 @@ SoundMenu = SoundMenu.convert()
 #選擇模式的背景
 ModeMenu = pg.Surface(image.ModeMenuSize)
 ModeMenu = ModeMenu.convert()
+
+#新手教學(NT)的背景、   問號
+
 
 card_base = []
 
@@ -112,7 +115,7 @@ class System:
     def DeleteRoomData(self):
         shutil.rmtree(self.RoomName)
 
-    def Title(self, Start_Game, Close_Game, BGMMenuOpen, BGMOption, SelectMenu):
+    def Title(self, Start_Game, Close_Game, BGMMenuOpen, BGMOption, SelectMenu, qui):
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 pg.quit()# 退出pygame
@@ -185,6 +188,7 @@ class System:
         Start_Game.draw()
         Close_Game.draw()
         BGMMenuOpen.draw()
+        qui.draw()
         screen.blit(bg, (0,0))
         if BGMOption.show:
             BGMOption.ShowMenu()
@@ -432,7 +436,8 @@ class ModeSelectMenu(Menu):
             return OneP.play_easy()
         if self.Four:
             FourP.play(ID)
-    
+
+
 OperateSystem = System()
 def main():
     #建立標題畫面的按鈕
@@ -440,11 +445,12 @@ def main():
     Start_Game = MenuButton(bg, image.start_game, image.start_game_up, image.start_game_position, (0,0))
     Close_Game = MenuButton(bg, image.close_game, image.close_game_up, image.close_game_position, (0,0))
     BGMMenuOpen = MenuButton(bg, image.music_bottom, image.music_bottom, image.music_position, (0,0))
+    qui = MenuButton(bg, image.qui, image.qui, (900, 100), (0, 0))
     BGMOption = BackGrondMusicMenu(SoundMenu, image.SoundMenuPosition, image.SoundMenuSize, BGM.MusicList, BGM.MusicStart, image.MusicMenu, image.MusicName)
     SelectMenu = ModeSelectMenu(ModeMenu, image.ModeMenuPosition, image.ModeMenuSize, image.OP, image.FP)
     BGMOption.PlayBGM()
     while True:
-        while OperateSystem.Title(Start_Game, Close_Game, BGMMenuOpen, BGMOption, SelectMenu):
+        while OperateSystem.Title(Start_Game, Close_Game, BGMMenuOpen, BGMOption, SelectMenu, qui):
             pg.display.update()
 
 main()
