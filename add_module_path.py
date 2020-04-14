@@ -1,6 +1,7 @@
-import sys as system
+import sys as system, os
 
+now = os.getcwd()
 
 def  path_append():
-    system.path.append('c:\\project\\data_Path')
-    system.path.append('c:\\project\\GameOperate')
+    system.path.append(now+'\data_Path')
+    system.path.append(now+'\GameOperate')
