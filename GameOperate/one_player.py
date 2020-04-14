@@ -25,6 +25,7 @@ process_desk = pg.image.load(image.process_desk)
 sc.blit(desk, (0, 0))
 text = pg.font.SysFont("Arial", 24)
 process_text = pg.font.Font("Chinese.ttf", 24)#24
+poker = pg.image.load(image.poker)
 
 card_base = [1]
 card_dict = {1 : 1} 
@@ -87,8 +88,9 @@ class computer:#電腦類別
         if str(self.name) == "電腦3":
             SITE = (0, 60)
         x, y = 278, 20
-        pg.draw.rect(self.bg_hand, colors.WHITE, [x, y, 44, 60])
+        self.bg_hand.blit(poker, (x, y))
         if display:
+            pg.draw.rect(self.bg_hand, colors.WHITE, [x, y, 44, 60])
             num_font = text.render(str(card), True, colors.BLACK) 
             self.bg_hand.blit(num_font, (x, y+15))
             for i in range(card_dict[card]):
@@ -121,7 +123,8 @@ class computer:#電腦類別
             n = self.card.index(card) 
             dx = 26*(10-len(self.card))#偏移
             x, y = 55+dx+n*50, 120#相對座標
-            pg.draw.rect(self.bg_hand, colors.WHITE, [x, y, 44, 60])
+            # pg.draw.rect(self.bg_hand, colors.WHITE, [x, y, 44, 60])
+            self.bg_hand.blit(poker, (x, y))
             #旋轉區塊
             num = self.name.split("電腦",1)#從名字分割出編號
             new_bg_hand = pg.transform.rotate(self.bg_hand, 90*int(num[-1]))
@@ -559,7 +562,6 @@ def play_easy():
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 return "close"
-                pause = False
             if event.type == pg.MOUSEBUTTONUP:
                 if again.isOver() == True:
                     pause = False

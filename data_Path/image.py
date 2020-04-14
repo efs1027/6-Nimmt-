@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 up = os.getcwd()
-imagefloder = up + "/image/"
+imagefloder = up + "\\image\\"
 #標題畫面用的圖片
 title_sence = imagefloder + "title_sence.jpg"#標題畫面背景位置
 desk = imagefloder + "desk.jpg"#桌子
@@ -81,3 +81,13 @@ com3_desk = imagefloder + "com3_desk.jpg"
 player1_desk = imagefloder + "player1_desk.jpg"
 table_desk = imagefloder + "table_desk.jpg"
 process_desk = imagefloder + "process_desk.jpg"
+poker = imagefloder + "poker.png"#卡背
+
+#新手教學用的圖
+que =  imagefloder + "que.png"#問號
+NT = imagefloder + "NT.jpg"#新手教學背景
+NT2 = imagefloder + "NT2.jpg"#第二頁
+NTback = imagefloder + "NTback.png"#新手教學返回鍵
+nextpage = imagefloder + "nextpage.png"
+Previous = imagefloder + "Previous.png"
+que_position = (900, 300)

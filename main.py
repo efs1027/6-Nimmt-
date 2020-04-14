@@ -35,11 +35,6 @@ SoundMenu = SoundMenu.convert()
 ModeMenu = pg.Surface(image.ModeMenuSize)
 ModeMenu = ModeMenu.convert()
 
-card_base = []
-
-for i in range(1, 105, 1):
-    card_base.append(i)
-
 class System:
 
     def Title(self, Start_Game, Close_Game, BGMMenuOpen, BGMOption, SelectMenu):
