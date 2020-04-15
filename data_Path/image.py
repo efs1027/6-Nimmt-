@@ -81,3 +81,14 @@ com3_desk = imagefloder + "com3_desk.jpg"
 player1_desk = imagefloder + "player1_desk.jpg"
 table_desk = imagefloder + "table_desk.jpg"
 process_desk = imagefloder + "process_desk.jpg"
+
+#新手教學用的圖
+que = imagefloder + "que.png"#問號
+NT1 = imagefloder + "NT1.jpg"#新手教學背景
+NT2 = imagefloder + "NT2.jpg"#第二頁
+NT3 = imagefloder + "NT3.jpg"#第三頁
+NTback = imagefloder + "NTback.png"#新手教學返回鍵
+nextpage = imagefloder + "nextpage.png"
+previous = imagefloder + "previous.png"
+poker = imagefloder + "poker.png"#卡背
+que_position = (900, 300)
