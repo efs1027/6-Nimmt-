@@ -229,7 +229,10 @@ class player:#玩家類別
                         self.draw_throw(self.selected_card)
                         pg.display.update()
         self.draw_hand(False)
-        self.draw_select(self.card_num)
+        if self.selected_card != 0:
+            self.draw_throw(self.selected_card)
+        else:
+            self.draw_select(self.card_num)
         pg.display.update()
                     
     def select_list(self, table, card_num):#收回卡片#card_num是玩家出的牌

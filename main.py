@@ -16,7 +16,7 @@ RoomPath = ("C:\project\RoomFile")
 pg.init()  # 初始化pygame
 pg.mixer.init()  # 初始化音樂
 
-pg.mixer.music.set_volume(0.0)
+pg.mixer.music.set_volume(0.2)
 
 pg.display.set_caption("誰是牛頭王")
 size = width, height = 1440, 720  # 設定視窗大小
@@ -272,7 +272,7 @@ class BackGrondMusicMenu(Menu):#BGM操作類
 
     song = 0
     MenuP = 2
-    Volume = 0.0
+    Volume = 0.2
     show = False
     Silented = False
     SilentedMenuP = 0
@@ -408,7 +408,8 @@ class NewbieTeach(Menu):
                         self.page -= 1
                     elif self.back.isOver():
                         self.ClickBack = True
-            if self.page == 1:
+                        self.page = 1
+            if self.page == 1 and self.ClickBack != True:
                 self.bg.blit(self.page1, (0, 0))
                 self.back.draw()
                 self.nextpage.draw()
