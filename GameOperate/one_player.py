@@ -170,11 +170,17 @@ class player:#玩家類別
         while entered == False:#當尚未按下enter時
             for event in pg.event.get():#遍歷所有事件
                 if event.type == pg.KEYDOWN:#查看所有按鍵事件
-                    if event.key == pg.K_LEFT and card_num != 0:#按左鍵的時候，選取左一個的牌
-                        card_num-=1 
-                    if event.key == pg.K_RIGHT and card_num != len(self.card)-1:#按右鍵的時候，選取右一個的牌 # 這裡要-1
-                        card_num+=1
-                    if event.key == pg.K_KP_ENTER or event.key == pg.K_SPACE:#按Space時 
+                    if event.key == pg.K_LEFT:#按左鍵的時候，選取左一個的牌
+                        if card_num != 0:
+                            card_num-=1
+                        else:
+                            card_num = len(self.card)-1
+                    if event.key == pg.K_RIGHT:#按右鍵的時候，選取右一個的牌 # 這裡要-1
+                        if card_num != len(self.card)-1:
+                            card_num+=1
+                        else:
+                            card_num = 0
+                    if event.key == pg.K_RETURN:#按Enter時 
                         #變換「是否按下Enter」的變數以跳出迴圈
                         entered = True
                         self.selected_card = self.card[card_num]
@@ -195,11 +201,17 @@ class player:#玩家類別
         while entered == False:#當尚未按下enter時 
             for event in pg.event.get():  # 遍歷所有事件
                 if event.type == pg.KEYDOWN:#查看所有按鍵事件 ## 這裡少加.type
-                    if event.key == pg.K_UP and list_num != 0:#按上鍵時，選取上一個列
-                        list_num-=1
-                    if event.key == pg.K_DOWN and list_num != 3:#按下鍵時，選取下一個列
-                        list_num+=1
-                    if event.key == pg.K_KP_ENTER or event.key == pg.K_SPACE:#按Space時 
+                    if event.key == pg.K_UP:#按上鍵時，選取上一個列
+                        if list_num != 0:
+                            list_num-=1
+                        else:
+                            list_num = 3
+                    if event.key == pg.K_DOWN:#按下鍵時，選取下一個列
+                        if list_num != 3:
+                            list_num+=1
+                        else:
+                            list_num = 0
+                    if event.key == pg.K_RETURN:#按Enter時 
                         #玩家拿走該列並且放置他出的牌
                         self.get_card(table, list_num, card_num)
                         table1.draw_table(False)
@@ -563,13 +575,13 @@ def play_easy():
             if event.type == pg.QUIT:
                 return "close"
             if event.type == pg.MOUSEBUTTONUP:
-                if again.isOver() == True:
+                if again.isOver():
                     pause = False
                     return "again"
-                if close.isOver() == True:
+                if close.isOver():
                     pause = False
                     return "close"
-                if back.isOver() == True:
+                if back.isOver():
                     pause = False
                     return "back"
         again.draw()

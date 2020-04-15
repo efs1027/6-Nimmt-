@@ -88,36 +88,20 @@ class System:
                     SelectMenu.ChangeMode()
                 if SelectMenu.Start.isOver() and SelectMenu.show:
                     usrid = str(uuid.uuid1())
-                    if SelectMenu.One:
-                        self.fade_to_game(1440, 720)
+                    self.fade_to_game(1440, 720)
+                    SelectMenu.show = False
+                    go = True
+                    while go:
                         result = SelectMenu.StartGame(usrid)
-                        go = True
-                        while go:
-                            if result == "close":
-                                pg.quit()# 退出pygame
-                                exit()
-                            if result == "back":
-                                go = False
-                                self.fade_to_title(1440, 720)
-                            if result == "again":
-                                self.fade_to_game(1440, 720)
-                                result = SelectMenu.StartGame()
-                    else:
-                        self.fade_to_game(1440, 720)
-                        SelectMenu.show = False
-                        result = SelectMenu.StartGame(usrid)
-                        go = True
-                        while go:
-                            if result == "close":
-                                self.DeletePlayerData()
-                                pg.quit()# 退出pygame
-                                exit()
-                            if result == "back":
-                                go = False
-                                self.fade_to_title(1440, 720)
-                            if result == "again":
-                                self.fade_to_game(1440, 720)
-                                result = SelectMenu.StartGame()
+                        if result == "close":
+                            pg.quit()# 退出pygame
+                            exit()
+                        if result == "back":
+                            go = False
+                            self.fade_to_title(1440, 720)
+                        if result == "again":
+                            self.fade_to_game(1440, 720)
+                            result = SelectMenu.StartGame(usrid)
                 elif Start_Game.isOver() and SelectMenu.show == False:
                     SelectMenu.ShowMenu()
                 elif SelectMenu.isOver() == False and SelectMenu.show:

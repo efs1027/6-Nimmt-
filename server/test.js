@@ -135,7 +135,9 @@ io.on('connection', function(socket){
         for(i=0;i<=table.base[card].length;i++){
           table.score[name].push(table.base[card].shift());
         }
-        table.base[card].push(table.facecard[name]);
+        if(table.facecard[name] != 0){
+          table.base[card].push(table.facecard[name]);
+        }
         table.facecard[name]=0;
       }
       if(ac==4&&name>=0 && name<=3 && card>=0 && card<=3){

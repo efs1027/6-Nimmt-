@@ -10,7 +10,7 @@ import color as colors, image as image
 import socketio
 
 try:
-    address = 'http://25.21.173.164:8070/'
+    address = 'http://25.72.61.125:8070/'
     sio = socketio.Client()
     sio.connect(address)
 except:
@@ -215,11 +215,17 @@ class player:#玩家類別
         for event in pg.event.get():#遍歷所有事件
             if a == "NULL":
                 if event.type == pg.KEYDOWN:#查看所有按鍵事件
-                    if event.key == pg.K_LEFT and self.card_num != 0:#按左鍵的時候，選取左一個的牌
-                        self.card_num-=1
-                    if event.key == pg.K_RIGHT and self.card_num != len(self.card)-1:#按右鍵的時候，選取右一個的牌 # 這裡要-1
-                        self.card_num+=1
-                    if event.key == pg.K_KP_ENTER or event.key == pg.K_SPACE:#按Space時 
+                    if event.key == pg.K_LEFT:#按左鍵的時候，選取左一個的牌
+                        if card_num != 0:
+                            card_num-=1
+                        else:
+                            card_num = len(self.card)-1
+                    if event.key == pg.K_RIGHT:#按右鍵的時候，選取右一個的牌 # 這裡要-1
+                        if card_num != len(self.card)-1:
+                            card_num+=1
+                        else:
+                            card_num = 0
+                    if event.key == pg.K_RETURN:#按Enter時 
                         self.selected_card = self.card[self.card_num]
                         #從手牌list中移除選擇的牌
                         sio.emit('action',{"name":self.ID,"ac":1,"card":self.selected_card})
@@ -241,11 +247,17 @@ class player:#玩家類別
         while entered == False:#當尚未按下enter時 
             for event in pg.event.get():  # 遍歷所有事件
                 if event.type == pg.KEYDOWN:#查看所有按鍵事件 ## 這裡少加.type
-                    if event.key == pg.K_UP and list_num != 0:#按上鍵時，選取上一個列
-                        list_num-=1
-                    if event.key == pg.K_DOWN and list_num != 3:#按下鍵時，選取下一個列
-                        list_num+=1
-                    if event.key == pg.K_KP_ENTER or event.key == pg.K_SPACE:#按Space時 
+                    if event.key == pg.K_UP:#按上鍵時，選取上一個列
+                        if list_num != 0:
+                            list_num-=1
+                        else:
+                            list_num = 3
+                    if event.key == pg.K_DOWN:#按下鍵時，選取下一個列
+                        if list_num != 3:
+                            list_num+=1
+                        else:
+                            list_num = 0
+                    if event.key == pg.K_RETURN:#按Enter時 
                         #玩家拿走該列並且放置他出的牌
                         self.get_card(table, list_num, card_num)
                         table1.draw_table(False)
@@ -645,13 +657,13 @@ def play(ID):
                 return "close"
                 pause = False
             if event.type == pg.MOUSEBUTTONUP:
-                if again.isOver() == True:
+                if again.isOver():
                     return "again"
                     pause = False
-                if close.isOver() == True:
+                if close.isOver():
                     return "close"
                     pause = False
-                if back.isOver() == True:
+                if back.isOver():
                     return "back"
                     pause = False
         again.draw()
