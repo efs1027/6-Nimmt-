@@ -88,7 +88,20 @@ que = imagefloder + "que.png"#問號
 NT1 = imagefloder + "NT1.jpg"#新手教學背景
 NT2 = imagefloder + "NT2.jpg"#第二頁
 NT3 = imagefloder + "NT3.jpg"#第三頁
+NT4 = imagefloder + "NT4.jpg"#第四頁
 NTback = imagefloder + "NTback.png"#新手教學返回鍵
 nextpage = imagefloder + "nextpage.png"
 previous = imagefloder + "previous.png"
 que_position = (900, 300)
+
+#牌上的數字
+number1 = imagefloder + "number1.png"
+number2 = imagefloder + "number2.png"
+number3 = imagefloder + "number3.png"
+number4 = imagefloder + "number4.png"
+number5 = imagefloder + "number5.png"
+number6 = imagefloder + "number6.png"
+number7 = imagefloder + "number7.png"
+number8 = imagefloder + "number8.png"
+number9 = imagefloder + "number9.png"
+number0 = imagefloder + "number0.png"

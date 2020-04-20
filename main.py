@@ -13,7 +13,7 @@ from pygame.locals import *
 pg.init()  # 初始化pygame
 pg.mixer.init()  # 初始化音樂
 
-pg.mixer.music.set_volume(0.2)
+pg.mixer.music.set_volume(0.0)
 
 pg.display.set_caption("誰是牛頭王")
 size = width, height = 1440, 720  # 設定視窗大小
@@ -269,8 +269,8 @@ class Menu:
 class BackGrondMusicMenu(Menu):#BGM操作類
 
     song = 0
-    MenuP = 2
-    Volume = 0.2
+    MenuP = 0
+    Volume = 0.0
     show = False
     Silented = False
     SilentedMenuP = 0
