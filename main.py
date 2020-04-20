@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #呂宗霖:http://25.72.61.125:8070/
 #張育誠:http://25.31.4.252:8070/
-import pygame as pg, add_module_path as ModAdd, uuid, pygame_textinput
+import pygame as pg, add_module_path as ModAdd, uuid
 
 ModAdd.path_append()
 import color, image, BGM, one_player as OneP, four_player as FourP
@@ -40,33 +40,6 @@ NT1 = pg.image.load(image.NT1)
 NT2 = pg.image.load(image.NT2)
 NT3 = pg.image.load(image.NT3)
 NT4 = pg.image.load(image.NT4)
-
-def t():
-    # Create TextInput-object
-    textinput = pygame_textinput.TextInput()
-
-    box = pg.Surface((200, 300))
-    clock = pg.time.Clock()
-
-    while True:
-        box.fill((225, 225, 225))
-
-        events = pg.event.get()
-        for event in events:
-            if event.type == pg.QUIT:
-                exit()
-            if event.type == pg.KEYDOWN:
-                if event.key == pg.K_RETURN:
-                    return textinput.get_text()
-
-        # Feed it with events every frame
-        textinput.update(events)
-        # Blit its surface onto the screen
-        box.blit(textinput.get_surface(), (10, 10))
-        bg.blit(box, (200, 300))
-        screen.blit(bg, (0, 0))
-        pg.display.update()
-        clock.tick(30)
 
 class System():
 
