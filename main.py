@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #呂宗霖:http://25.72.61.125:8070/
 #張育誠:http://25.31.4.252:8070/
-import pygame as pg, os, shutil, random, add_module_path as ModAdd, uuid
+import pygame as pg, add_module_path as ModAdd, uuid, pygame_textinput
 
 ModAdd.path_append()
 import color, image, BGM, one_player as OneP, four_player as FourP
@@ -9,9 +9,6 @@ import color, image, BGM, one_player as OneP, four_player as FourP
 from sys import exit
 
 from pygame.locals import *
-
-PlayerPath = ("C:\project\PlayerFile")
-RoomPath = ("C:\project\RoomFile")
 
 pg.init()  # 初始化pygame
 pg.mixer.init()  # 初始化音樂
@@ -42,19 +39,36 @@ NTbg = pg.Surface(screen.get_size())
 NT1 = pg.image.load(image.NT1)
 NT2 = pg.image.load(image.NT2)
 NT3 = pg.image.load(image.NT3)
+NT4 = pg.image.load(image.NT4)
 
-card_base = []
+def t():
+    # Create TextInput-object
+    textinput = pygame_textinput.TextInput()
 
-for i in range(1, 105, 1):
-    card_base.append(i)
+    box = pg.Surface((200, 300))
+    clock = pg.time.Clock()
 
-class System:
+    while True:
+        box.fill((225, 225, 225))
 
-    def __init__(self):
-        self.First_play = True
-        
-    def Firstplay(self):
-        self.First_play = False
+        events = pg.event.get()
+        for event in events:
+            if event.type == pg.QUIT:
+                exit()
+            if event.type == pg.KEYDOWN:
+                if event.key == pg.K_RETURN:
+                    return textinput.get_text()
+
+        # Feed it with events every frame
+        textinput.update(events)
+        # Blit its surface onto the screen
+        box.blit(textinput.get_surface(), (10, 10))
+        bg.blit(box, (200, 300))
+        screen.blit(bg, (0, 0))
+        pg.display.update()
+        clock.tick(30)
+
+class System():
 
     def Title(self, Start_Game, Close_Game, BGMMenuOpen, BGMOption, SelectMenu, que, NT):
         for event in pg.event.get():
@@ -367,7 +381,7 @@ class ModeSelectMenu(Menu):
 
 class NewbieTeach(Menu):
     
-    def __init__ (self, bg, p1, p2, p3):
+    def __init__ (self, bg, p1, p2, p3, p4):
         self.page = 1
         self.show = False
         self.ClickBack = False
@@ -375,9 +389,10 @@ class NewbieTeach(Menu):
         self.page1 = p1
         self.page2 = p2
         self.page3 = p3
-        self.back = MenuButton(self.bg, image.NTback, image.NTback, (900, 400), (0, 0))
-        self.nextpage = MenuButton(self.bg, image.nextpage, image.nextpage, (1000, 500), (0, 0))
-        self.previous = MenuButton(self.bg, image.previous, image.previous, (600, 500), (0, 0))
+        self.page4 = p4
+        self.back = MenuButton(self.bg, image.NTback, image.NTback, (720, 650), (0, 0))
+        self.nextpage = MenuButton(self.bg, image.nextpage, image.nextpage, (1300, 650), (0, 0))
+        self.previous = MenuButton(self.bg, image.previous, image.previous, (0, 650), (0, 0))
     
     def ShowPage(self):
         while self.ClickBack == False:
@@ -386,7 +401,7 @@ class NewbieTeach(Menu):
                     pg.quit()# 退出pygame
                     exit()
                 if event.type == pg.MOUSEBUTTONUP:
-                    if self.nextpage.isOver() and self.page < 3:
+                    if self.nextpage.isOver() and self.page < 4:
                         self.page += 1
                     elif self.previous.isOver() and self.page > 1:
                         self.page -= 1
@@ -405,6 +420,11 @@ class NewbieTeach(Menu):
             elif self.page == 3:
                 self.bg.blit(self.page3, (0, 0))
                 self.back.draw()
+                self.nextpage.draw()
+                self.previous.draw()
+            elif self.page == 4:
+                self.bg.blit(self.page4, (0, 0))
+                self.back.draw()
                 self.previous.draw()
             screen.blit(self.bg, (0 ,0))
             pg.display.update()
@@ -419,7 +439,7 @@ def main():
     que = MenuButton(bg, image.que, image.que, image.que_position, (0, 0))
     BGMOption = BackGrondMusicMenu(SoundMenu, image.SoundMenuPosition, image.SoundMenuSize, BGM.MusicList, BGM.MusicStart, image.MusicMenu, image.MusicName)
     SelectMenu = ModeSelectMenu(ModeMenu, image.ModeMenuPosition, image.ModeMenuSize, image.OP, image.FP)
-    NT = NewbieTeach(NTbg, NT1, NT2, NT3)
+    NT = NewbieTeach(NTbg, NT1, NT2, NT3, NT4)
     BGMOption.PlayBGM()
     while True:
         while OperateSystem.Title(Start_Game, Close_Game, BGMMenuOpen, BGMOption, SelectMenu, que, NT):
