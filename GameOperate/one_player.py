@@ -28,7 +28,7 @@ process_text = pg.font.Font("Chinese.ttf", 24)#24
 poker = pg.image.load(image.poker)
 
 card_base = [1]
-card_dict = {1 : 1} 
+card_dict = {1 : 1}
 
 #卡牌屬性目錄設定
 for i in range (2, 105, 1):
