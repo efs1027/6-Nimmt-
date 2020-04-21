@@ -1,17 +1,43 @@
 # -*- coding: utf-8 -*-
 #呂宗霖:http://25.72.61.125:8070/
 #張育誠:http://25.31.4.252:8070/
-import pygame as pg, os, shutil, random, add_module_path as ModAdd, uuid
+import pygame as pg, pygame_textinput, socketio, os, sys, add_module_path as ModAdd
+pythonpath = sys.path[4]+"\\python.exe"
 
 ModAdd.path_append()
-import color, image, BGM, one_player as OneP, four_player as FourP
+import color as colors, image, BGM, one_player as OneP
 
 from sys import exit
 
 from pygame.locals import *
 
-PlayerPath = ("C:\project\PlayerFile")
-RoomPath = ("C:\project\RoomFile")
+pg.init()
+pg.display.set_caption("請輸入暱稱")
+size = width, height = 250, 50  # 設定視窗大小
+screen = pg.display.set_mode(size)  # 顯示視窗
+Name = "player1"
+textinput = pygame_textinput.TextInput()
+clock = pg.time.Clock()
+entered = False
+while entered == False:
+    screen.fill((225, 225, 225))
+    events = pg.event.get()
+    for event in events:
+        if event.type == pg.QUIT:
+            exit()
+        if event.type == pg.KEYDOWN:
+            if event.key == pg.K_RETURN:
+                if textinput.get_text() != "":
+                    Name = textinput.get_text()
+                    entered = True
+
+    # Feed it with events every frame
+    textinput.update(events)
+    # Blit its surface onto the screen
+    screen.blit(textinput.get_surface(), (10, 10))
+
+    pg.display.update()
+    clock.tick(30)
 
 pg.init()  # 初始化pygame
 pg.mixer.init()  # 初始化音樂
@@ -29,35 +55,11 @@ bg = bg.convert()
 title_sence = pg.image.load(image.title_sence)#標題畫面背景
 title_sence.convert()
 
-#音樂選單的背景
-SoundMenu = pg.Surface(image.SoundMenuSize)
-SoundMenu = SoundMenu.convert()
-
-#選擇模式的背景
-ModeMenu = pg.Surface(image.ModeMenuSize)
-ModeMenu = ModeMenu.convert()
-
-#新手教學的背景
-NTbg = pg.Surface(screen.get_size())
-NT1 = pg.image.load(image.NT1)
-NT2 = pg.image.load(image.NT2)
-NT3 = pg.image.load(image.NT3)
-
-card_base = []
-
-for i in range(1, 105, 1):
-    card_base.append(i)
-
 class System:
 
-    def __init__(self):
-        self.First_play = True
-        
-    def Firstplay(self):
-        self.First_play = False
-
-    def Title(self, Start_Game, Close_Game, BGMMenuOpen, BGMOption, SelectMenu, que, NT):
-        for event in pg.event.get():
+    def Title(self, Start_Game, Close_Game, BGMMenuOpen, BGMOption, SelectMenu, que, NT, AdressInput):
+        events = pg.event.get()
+        for event in events:
             if event.type == pg.QUIT:
                 pg.quit()# 退出pygame
                 exit()
@@ -84,15 +86,17 @@ class System:
                         BGMOption.ChangeVolume(Volume)
                 if SelectMenu.One and SelectMenu.FourPlayerButton.isOver() and SelectMenu.show:
                     SelectMenu.ChangeMode()
+                    AdressInput.show = True
                 if SelectMenu.Four and SelectMenu.OnePlayerButton.isOver() and SelectMenu.show:
                     SelectMenu.ChangeMode()
+                    AdressInput.show = False
                 if SelectMenu.Start.isOver() and SelectMenu.show:
-                    usrid = str(uuid.uuid1())
+                    IP = AdressInput.Inputbox.get_text()
                     self.fade_to_game(1440, 720)
                     SelectMenu.show = False
                     go = True
                     while go:
-                        result = SelectMenu.StartGame(usrid)
+                        result = SelectMenu.StartGame(Name, IP)
                         if result == "close":
                             pg.quit()# 退出pygame
                             exit()
@@ -101,11 +105,18 @@ class System:
                             self.fade_to_title(1440, 720)
                         if result == "again":
                             self.fade_to_game(1440, 720)
-                            result = SelectMenu.StartGame(usrid)
+                            result = SelectMenu.StartGame(Name, IP)
                 elif Start_Game.isOver() and SelectMenu.show == False:
                     SelectMenu.ShowMenu()
-                elif SelectMenu.isOver() == False and SelectMenu.show:
+                    if SelectMenu.Four:
+                        AdressInput.show = True
+                elif SelectMenu.isOver() == False and AdressInput.isOver() == False and SelectMenu.show:
                     SelectMenu.show = False
+                    AdressInput.show = False
+                elif AdressInput.show and AdressInput.isOver():
+                    AdressInput.activate = True
+                elif AdressInput.show and AdressInput.isOver() == False:
+                    AdressInput.activate = False
                 elif que.isOver():
                     NT.ClickBack = False
                     NT.show = True
@@ -120,6 +131,10 @@ class System:
             BGMOption.ShowMenu()
         if SelectMenu.show:
             SelectMenu.ShowMenu()
+        if AdressInput.show:
+            AdressInput.ShowMenu()
+            if AdressInput.activate:
+                AdressInput.Update(events)
         if NT.show:
             NT.ShowPage()
         return True
@@ -261,8 +276,9 @@ class BackGrondMusicMenu(Menu):#BGM操作類
     Silented = False
     SilentedMenuP = 0
 
-    def __init__(self, bg, position, size, MusicList, MusicStart, MenuBackground, MusicName):
-        self.bg = bg
+    def __init__(self, position, size, MusicList, MusicStart, MenuBackground, MusicName):
+        self.bg = pg.Surface(image.SoundMenuSize)
+        self.bg = self.bg.convert()
         self.position = position
         self.size = size
         self.MusicList = MusicList
@@ -330,8 +346,9 @@ class ModeSelectMenu(Menu):
     show = False
     One = True
     Four = False
-    def __init__(self, bg, position, size, OnePlayerPic, FourPlayerPic):
-        self.bg = bg
+    def __init__(self, position, size, OnePlayerPic, FourPlayerPic):
+        self.bg = pg.Surface(image.ModeMenuSize)
+        self.bg = self.bg.convert()
         self.position = position
         self.size = size
         self.OnePlayerPic = pg.image.load(OnePlayerPic).convert_alpha()
@@ -358,23 +375,25 @@ class ModeSelectMenu(Menu):
             self.One = True
             self.Four = False
     
-    def StartGame(self, ID):
+    def StartGame(self, Name, IP):
         self.show = False
         if self.One:
-            return OneP.play_easy()
+            return OneP.play_easy(Name)
         if self.Four:
-            FourP.play(ID)
+            os.system()
+            os.system(pythonpath + " four_player1.py " + IP + " " + Name)
+            return "back"
 
 class NewbieTeach(Menu):
     
-    def __init__ (self, bg, p1, p2, p3):
+    def __init__ (self):
         self.page = 1
         self.show = False
         self.ClickBack = False
-        self.bg = bg
-        self.page1 = p1
-        self.page2 = p2
-        self.page3 = p3
+        self.bg = pg.Surface((1440, 720))
+        self.page1 = pg.image.load(image.NT1)
+        self.page2 = pg.image.load(image.NT2)
+        self.page3 = pg.image.load(image.NT3)
         self.back = MenuButton(self.bg, image.NTback, image.NTback, (900, 400), (0, 0))
         self.nextpage = MenuButton(self.bg, image.nextpage, image.nextpage, (1000, 500), (0, 0))
         self.previous = MenuButton(self.bg, image.previous, image.previous, (600, 500), (0, 0))
@@ -409,20 +428,45 @@ class NewbieTeach(Menu):
             screen.blit(self.bg, (0 ,0))
             pg.display.update()
 
-OperateSystem = System()
+class AdressInputMenu(Menu):
+    
+    def __init__(self, size, position):
+        self.show = False
+        self.activate = False
+        self.size = size
+        self.position = position
+        self.bg = pg.Surface(self.size)
+        self.InputDisplyer = pg.Surface((self.size[0]-20, 40))
+        self.Inputbox = pygame_textinput.TextInput("http://:8070/", "Chinese.ttf", 25, True, colors.BLACK, colors.BLACK, 400, 35, 60)
+        self.font = pg.font.Font("Chinese.ttf", 24)
+        self.text = self.font.render("請輸入IP位址", True, colors.WHITE)
+
+    def Setting(self):
+        self.bg.fill(colors.BLACK)
+        self.InputDisplyer.fill(colors.WHITE)
+        self.InputDisplyer.blit(self.Inputbox.get_surface(), (0, 0))
+        self.bg.blit(self.text, (5, 5))
+        self.bg.blit(self.InputDisplyer, (5, 35))
+
+    def Update(self, events):
+        self.Inputbox.update(events)
+        self.Setting()
+    
 def main():
-    #建立標題畫面的按鈕
+    OperateSystem = System()
     OperateSystem.fade_to_title(1440, 720)
+    #建立標題畫面的按鈕
     Start_Game = MenuButton(bg, image.start_game, image.start_game_up, image.start_game_position, (0,0))
     Close_Game = MenuButton(bg, image.close_game, image.close_game_up, image.close_game_position, (0,0))
     BGMMenuOpen = MenuButton(bg, image.music_bottom, image.music_bottom, image.music_position, (0,0))
     que = MenuButton(bg, image.que, image.que, image.que_position, (0, 0))
-    BGMOption = BackGrondMusicMenu(SoundMenu, image.SoundMenuPosition, image.SoundMenuSize, BGM.MusicList, BGM.MusicStart, image.MusicMenu, image.MusicName)
-    SelectMenu = ModeSelectMenu(ModeMenu, image.ModeMenuPosition, image.ModeMenuSize, image.OP, image.FP)
-    NT = NewbieTeach(NTbg, NT1, NT2, NT3)
+    BGMOption = BackGrondMusicMenu(image.SoundMenuPosition, image.SoundMenuSize, BGM.MusicList, BGM.MusicStart, image.MusicMenu, image.MusicName)
+    SelectMenu = ModeSelectMenu(image.ModeMenuPosition, image.ModeMenuSize, image.OP, image.FP)
+    NT = NewbieTeach()
+    AdressInput = AdressInputMenu((300, 100), (100, 250))
     BGMOption.PlayBGM()
     while True:
-        while OperateSystem.Title(Start_Game, Close_Game, BGMMenuOpen, BGMOption, SelectMenu, que, NT):
+        while OperateSystem.Title(Start_Game, Close_Game, BGMMenuOpen, BGMOption, SelectMenu, que, NT, AdressInput):
             pg.display.update()
 
 main()
