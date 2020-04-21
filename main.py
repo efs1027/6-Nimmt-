@@ -34,12 +34,13 @@ SoundMenu = SoundMenu.convert()
 ModeMenu = pg.Surface(image.ModeMenuSize)
 ModeMenu = ModeMenu.convert()
 
-#新手教學的背景
+#新手教學用的圖片
 NTbg = pg.Surface(screen.get_size())
 NT1 = pg.image.load(image.NT1)
 NT2 = pg.image.load(image.NT2)
 NT3 = pg.image.load(image.NT3)
 NT4 = pg.image.load(image.NT4)
+
 
 class System():
 
@@ -363,9 +364,9 @@ class NewbieTeach(Menu):
         self.page2 = p2
         self.page3 = p3
         self.page4 = p4
-        self.back = MenuButton(self.bg, image.NTback, image.NTback, (720, 650), (0, 0))
-        self.nextpage = MenuButton(self.bg, image.nextpage, image.nextpage, (1300, 650), (0, 0))
-        self.previous = MenuButton(self.bg, image.previous, image.previous, (0, 650), (0, 0))
+        self.back = MenuButton(self.bg, image.NTback, image.NTback_pressed, (1100, 650), (0, 0))
+        self.previous = MenuButton(self.bg, image.previous, image.previous_pressed, (1200, 650), (0, 0))
+        self.nextpage = MenuButton(self.bg, image.nextpage, image.nextpage_pressed, (1300, 650), (0, 0))
     
     def ShowPage(self):
         while self.ClickBack == False:

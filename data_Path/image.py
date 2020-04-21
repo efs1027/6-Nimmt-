@@ -82,6 +82,7 @@ player1_desk = imagefloder + "player1_desk.jpg"
 table_desk = imagefloder + "table_desk.jpg"
 process_desk = imagefloder + "process_desk.jpg"
 poker = imagefloder + "poker.png"#卡背
+card_face = imagefloder + "card_face.png"#卡面
 
 #新手教學用的圖
 que = imagefloder + "que.png"#問號
@@ -92,7 +93,10 @@ NT4 = imagefloder + "NT4.jpg"#第四頁
 NTback = imagefloder + "NTback.png"#新手教學返回鍵
 nextpage = imagefloder + "nextpage.png"
 previous = imagefloder + "previous.png"
-que_position = (900, 300)
+NTback_pressed = imagefloder + "NTback_pressed.png"#新手教學返回鍵
+nextpage_pressed = imagefloder + "nextpage_pressed.png"
+previous_pressed = imagefloder + "previous_pressed.png"
+que_position = (1250, 610)
 
 #牌上的數字
 number1 = imagefloder + "number1.png"
