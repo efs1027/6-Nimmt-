@@ -28,7 +28,7 @@ process_text = pg.font.Font("Chinese.ttf", 24)#24
 poker = pg.image.load(image.poker)
 
 card_base = [1]
-card_dict = {1 : 1} 
+card_dict = {1 : 1}
 
 #卡牌屬性目錄設定
 for i in range (2, 105, 1):
@@ -139,8 +139,8 @@ class computer:#電腦類別
 
 class player:#玩家類別
     
-    def __init__(self, card):#設定基本資料
-        self.name = "player"#設定玩家名稱
+    def __init__(self, card, Name):#設定基本資料
+        self.name = Name#設定玩家名稱
         self.card = card#設定玩家擁有的牌
         self.selected_card = 1 # 被選中的牌初始化
         self.bg_hand = pg.Surface((600, 200))#設定區塊
@@ -381,7 +381,7 @@ def assign():#發牌
             pg.draw.rect(sc, colors.WHITE, [centerx+ds*n*2-7, centery, 60, 44])#right
             pg.display.update()
 
-def play_easy():
+def play_easy(Name):
     sc.blit(desk, (0, 0))
     start_stage = True
     game_keep_going = False
@@ -402,7 +402,7 @@ def play_easy():
         com1 = computer("1", c1_card)
         com2 = computer("2", c2_card)
         com3 = computer("3", c3_card)
-        player1 = player(player_card)
+        player1 = player(player_card, Name)
         #翻開四張牌擺在桌上
         list1 = card_base[41 : 42 : 1]
         list2 = card_base[42 : 43 : 1]

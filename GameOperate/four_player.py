@@ -5,16 +5,9 @@
     更酷的特效!!!
 """
 # -*- coding: utf-8 -*-
-import pygame as pg, random
+import pygame as pg, random, sys
 import color as colors, image as image
 import socketio
-
-try:
-    address = 'http://25.72.61.125:8070/'
-    sio = socketio.Client()
-    sio.connect(address)
-except:
-    pass
 
 data = {}
 error = False
@@ -89,10 +82,10 @@ for i in range (2, 105, 1):
 
 class computer:#電腦類別
 
-    def __init__(self, num, card):#設定基本資料
+    def __init__(self, Name, card):#設定基本資料
         self.num = int(num) - 1
-        self.name = "電腦" + num#設定電腦名稱
-        self.card = card#設定電腦手牌
+        self.name = Name#設定名稱
+        self.card = card#設定手牌
         self.selected_card = 0 # 被選中的牌初始化
         self.bg_hand = pg.Surface((600, 200))#設定區塊
         self.bull = 0#分數初始化
@@ -183,9 +176,9 @@ class computer:#電腦類別
 
 class player:#玩家類別
     
-    def __init__(self, card, ID):#設定基本資料
+    def __init__(self, card, ID, Name):#設定基本資料
         self.ID = ID
-        self.name = "player"#設定玩家名稱
+        self.name = Name#設定玩家名稱
         self.card = card#設定玩家擁有的牌
         self.selected_card = 0 # 被選中的牌初始化
         self.bg_hand = pg.Surface((600, 200))#設定區塊
@@ -216,15 +209,15 @@ class player:#玩家類別
             if a == "NULL":
                 if event.type == pg.KEYDOWN:#查看所有按鍵事件
                     if event.key == pg.K_LEFT:#按左鍵的時候，選取左一個的牌
-                        if card_num != 0:
-                            card_num-=1
+                        if self.card_num != 0:
+                            self.card_num-=1
                         else:
-                            card_num = len(self.card)-1
+                            self.card_num = len(self.card)-1
                     if event.key == pg.K_RIGHT:#按右鍵的時候，選取右一個的牌 # 這裡要-1
-                        if card_num != len(self.card)-1:
-                            card_num+=1
+                        if self.card_num != len(self.card)-1:
+                            self.card_num+=1
                         else:
-                            card_num = 0
+                            self.card_num = 0
                     if event.key == pg.K_RETURN:#按Enter時 
                         self.selected_card = self.card[self.card_num]
                         #從手牌list中移除選擇的牌
@@ -439,7 +432,10 @@ def assign():#發牌
             pg.draw.rect(sc, colors.WHITE, [centerx+ds*n*2-7, centery, 60, 44])#right
             pg.display.update()
 
-def play(ID):
+def play(Name, IP):
+    address = IP
+    sio = socketio.Client()
+    sio.connect(address)
     global data
     global PlayerID
     global error
@@ -457,6 +453,10 @@ def play(ID):
             process_font("等待其他玩家", turn)
             if ID in data["players"]:
                 PlayerID = data["players"].index(ID)
+            if data["players"] == 4:
+                com1Name = data["players"][0]
+                com2Name = data["players"][1]
+                com3Name = data["players"][2]
         #發牌給電腦及玩家
         numlist = [0, 1, 2, 3]
         numlist.remove(PlayerID)
@@ -465,10 +465,10 @@ def play(ID):
         player_card.sort()
         #設置電腦與玩家數值
         global table1, com1, com2, com3, player1
-        com1 = computer("1", hands[0])
-        com2 = computer("2", hands[1])
-        com3 = computer("3", hands[2])
-        player1 = player(player_card, PlayerID)
+        com1 = computer(com1Name, hands[0])
+        com2 = computer(com2Name, hands[1])
+        com3 = computer(com3Name, hands[2])
+        player1 = player(player_card, PlayerID, Name)
         #翻開四張牌擺在桌上
         listgroup = data["base"]
         #設置桌面數值
@@ -655,17 +655,16 @@ def play(ID):
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 return "close"
-                pause = False
             if event.type == pg.MOUSEBUTTONUP:
                 if again.isOver():
+                    pause = False
                     return "again"
-                    pause = False
                 if close.isOver():
+                    pause = False
                     return "close"
-                    pause = False
                 if back.isOver():
-                    return "back"
                     pause = False
+                    return "back"
         again.draw()
         close.draw()
         back.draw()
