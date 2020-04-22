@@ -394,9 +394,10 @@ class NewbieTeach(Menu):
         self.page1 = pg.image.load(image.NT1)
         self.page2 = pg.image.load(image.NT2)
         self.page3 = pg.image.load(image.NT3)
-        self.back = MenuButton(self.bg, image.NTback, image.NTback, (900, 400), (0, 0))
-        self.nextpage = MenuButton(self.bg, image.nextpage, image.nextpage, (1000, 500), (0, 0))
-        self.previous = MenuButton(self.bg, image.previous, image.previous, (600, 500), (0, 0))
+        self.page4 = pg.image.load(image.NT4)
+        self.back = MenuButton(self.bg, image.NTback, image.NTback_pressed, image.NTback_position, (0, 0))
+        self.nextpage = MenuButton(self.bg, image.nextpage, image.nextpage_pressed, image.nextpage_position, (0, 0))
+        self.previous = MenuButton(self.bg, image.previous, image.previous_pressed, image.previous_position, (0, 0))
     
     def ShowPage(self):
         while self.ClickBack == False:
@@ -405,7 +406,7 @@ class NewbieTeach(Menu):
                     pg.quit()# 退出pygame
                     exit()
                 if event.type == pg.MOUSEBUTTONUP:
-                    if self.nextpage.isOver() and self.page < 3:
+                    if self.nextpage.isOver() and self.page < 4:
                         self.page += 1
                     elif self.previous.isOver() and self.page > 1:
                         self.page -= 1
@@ -423,6 +424,11 @@ class NewbieTeach(Menu):
                 self.previous.draw()
             elif self.page == 3:
                 self.bg.blit(self.page3, (0, 0))
+                self.back.draw()
+                self.nextpage.draw()
+                self.previous.draw()
+            elif self.page == 4:
+                self.bg.blit(self.page4, (0, 0))
                 self.back.draw()
                 self.previous.draw()
             screen.blit(self.bg, (0 ,0))
