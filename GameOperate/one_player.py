@@ -27,6 +27,8 @@ text = pg.font.SysFont("Arial", 24)
 process_text = pg.font.Font("Chinese.ttf", 24)#24
 poker = pg.image.load(image.poker)
 card_face = pg.image.load(image.card_face)
+bull_big = pg.image.load(image.bull_big)
+bull_small = pg.image.load(image.bull_small)
 
 number1 = pg.image.load(image.number1)
 number2 = pg.image.load(image.number2)
@@ -112,8 +114,10 @@ class computer:#電腦類別
             for i in cardnumber:
                 self.bg_hand.blit(allnumber[int(i)], (x+15*digits, y+15))
                 digits += 1
+            dx = 1.5*(7-int(card_dict[card]))#維持牛頭在中央
             for i in range(card_dict[card]):
-                pg.draw.circle(self.bg_hand, colors.RED, (x+6+i*6, y+6), 2)
+                # pg.draw.circle(self.bg_hand, colors.RED, (x+6+i*6, y+6), 2)
+                self.bg_hand.blit(bull_small, (x+dx+i*6, y+3))
         #旋轉區塊
         num = self.name.split("電腦",1)#從名字分割出編號
         new_bg_hand = pg.transform.rotate(self.bg_hand, 90*int(num[-1]))
@@ -134,7 +138,8 @@ class computer:#電腦類別
             self.bg_hand.blit(com3_desk, (0,0))
         #玩家總牛頭數
         x, y = 550, 50
-        pg.draw.circle(self.bg_hand, colors.RED, (x, y), 10)
+        # pg.draw.circle(self.bg_hand, colors.RED, (x, y), 10)
+        self.bg_hand.blit(bull_big, (x+6+i*6, y+6))
         num_font = text.render(str(self.bull), True, colors.RED)
         self.bg_hand.blit(num_font, (x+10, y))
         for card in self.card:
@@ -258,8 +263,10 @@ class player:#玩家類別
             self.bg_hand.blit(allnumber[int(i)], (x+15*digits, y+15))
             digits += 1
         if card != False:
+            dx = 1.5*(7-int(card_dict[card]))#維持牛頭在中央
             for i in range(card_dict[card]):
-                pg.draw.circle(self.bg_hand, colors.RED, (x+6+i*6, y+6), 2)
+                # pg.draw.circle(self.bg_hand, colors.RED, (x+6+i*6, y+6), 2)
+                self.bg_hand.blit(bull_small, (x+dx+i*6, y+3))
         sc.blit(self.bg_hand, (420, 520))
 
     def draw_hand(self, gradually):#手牌
@@ -267,9 +274,10 @@ class player:#玩家類別
         self.bg_hand.blit(player1_desk, (0, 0))
         #玩家總牛頭數
         x, y = 550, 50
-        pg.draw.circle(self.bg_hand, colors.RED, (x, y),10)
+        # pg.draw.circle(self.bg_hand, colors.RED, (x, y),10)
+        self.bg_hand.blit(bull_big, (x-20, y))
         num_font = text.render(str(self.bull), True, colors.RED)
-        self.bg_hand.blit(num_font, (x+10, y))
+        self.bg_hand.blit(num_font, (x, y))
         for card in self.card:
             #手牌
             n = self.card.index(card) 
@@ -285,8 +293,10 @@ class player:#玩家類別
                 self.bg_hand.blit(allnumber[int(i)], (x+15*digits, y+15))
                 digits += 1
             #牌牛頭數
+            dx = 1.5*(7-int(card_dict[card]))#維持牛頭在中央
             for i in range(card_dict[card]):
-                pg.draw.circle(self.bg_hand, colors.RED, (x+6+i*6, y+6), 2)
+                # pg.draw.circle(self.bg_hand, colors.RED, (x+6+i*6, y+6), 2)
+                self.bg_hand.blit(bull_small, (x+dx+i*6, y+3))
             #畫布印上sc
             sc.blit(self.bg_hand, (420, 520))
             if gradually:
@@ -324,8 +334,10 @@ class player:#玩家類別
             table1.bg_table.blit(allnumber[int(i)], (x+15*digits, y+15))
             digits += 1
         #牌牛頭數
+        dx = 1.5*(7-int(card_dict[card]))#維持牛頭在中央
         for i in range(card_dict[self.selected_card]):
-            pg.draw.circle(table1.bg_table, colors.RED, (x+6+i*6, y+6), 2)
+            # pg.draw.circle(table1.bg_table, colors.RED, (x+6+i*6, y+6), 2)
+            table1.bg_table.blit(bull_small, (x+dx+i*6, y+3))
         sc.blit(table1.bg_table, (320, 200))
         
 class table:#桌子類別
@@ -368,8 +380,10 @@ class table:#桌子類別
                 for i in cardnumber:
                     self.bg_table.blit(allnumber[int(i)], (x+15*digits, y+15))
                     digits += 1
+                dx = 1.5*(7-int(card_dict[card]))#維持牛頭在中央
                 for i in range(card_dict[card]):
-                    pg.draw.circle(self.bg_table, colors.RED, (x+6+i*6, y+6), 2)
+                    # pg.draw.circle(self.bg_table, colors.RED, (x+6+i*6, y+6), 2)
+                    self.bg_table.blit(bull_small, (x+dx+i*6, y+3))
                 sc.blit(self.bg_table, (320, 200))
                 if gradually:
                     pg.display.update() 

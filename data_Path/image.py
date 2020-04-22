@@ -96,6 +96,8 @@ previous = imagefloder + "previous.png"
 NTback_pressed = imagefloder + "NTback_pressed.png"#新手教學返回鍵
 nextpage_pressed = imagefloder + "nextpage_pressed.png"
 previous_pressed = imagefloder + "previous_pressed.png"
+bull_big = imagefloder + "bull_big.png"#大寫避免衝突
+bull_small = imagefloder + "bull_small.png"#大寫避免衝突
 que_position = (1250, 610)
 
 #牌上的數字
