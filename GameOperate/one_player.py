@@ -275,7 +275,7 @@ class player:#玩家類別
         #玩家總牛頭數
         x, y = 550, 50
         # pg.draw.circle(self.bg_hand, colors.RED, (x, y),10)
-        self.bg_hand.blit(bull_big, (x-20, y))
+        self.bg_hand.blit(bull_big, (x-30, y))
         num_font = text.render(str(self.bull), True, colors.RED)
         self.bg_hand.blit(num_font, (x, y))
         for card in self.card:
