@@ -111,8 +111,9 @@ class computer:#電腦類別
             # self.bg_hand.blit(num_font, (x, y+15))
             cardnumber = str(card)
             digits = 0#cardnumber的位數
+            dx = 7*(2-len(cardnumber))+2*len(cardnumber)#維持數字在中央
             for i in cardnumber:
-                self.bg_hand.blit(allnumber[int(i)], (x+15*digits, y+15))
+                self.bg_hand.blit(allnumber[int(i)], (x+dx+(15-1*len(cardnumber))*digits, y+15))
                 digits += 1
             dx = 1.5*(7-int(card_dict[card]))#維持牛頭在中央
             for i in range(card_dict[card]):
@@ -259,8 +260,9 @@ class player:#玩家類別
         # self.bg_hand.blit(num_font, (x, y+15))
         cardnumber = str(card)
         digits = 0#cardnumber的位數
+        dx = 7*(2-len(cardnumber))+2*len(cardnumber)#維持數字在中央
         for i in cardnumber:
-            self.bg_hand.blit(allnumber[int(i)], (x+15*digits, y+15))
+            self.bg_hand.blit(allnumber[int(i)], (x+dx+(15-1*len(cardnumber))*digits, y+15))
             digits += 1
         if card != False:
             dx = 1.5*(7-int(card_dict[card]))#維持牛頭在中央
@@ -289,8 +291,9 @@ class player:#玩家類別
             # self.bg_hand.blit(num_font, (x, y+15))
             cardnumber = str(card)
             digits = 0#cardnumber的位數
+            dx = 7*(2-len(cardnumber))+2*len(cardnumber)#維持數字在中央
             for i in cardnumber:
-                self.bg_hand.blit(allnumber[int(i)], (x+15*digits, y+15))
+                self.bg_hand.blit(allnumber[int(i)], (x+dx+(15-1*len(cardnumber))*digits, y+15))
                 digits += 1
             #牌牛頭數
             dx = 1.5*(7-int(card_dict[card]))#維持牛頭在中央
@@ -330,8 +333,9 @@ class player:#玩家類別
         # table1.bg_table.blit(num_font, (x, y+15))
         cardnumber = str(self.selected_card)
         digits = 0#cardnumber的位數
+        dx = 7*(2-len(cardnumber))+2*len(cardnumber)#維持數字在中央
         for i in cardnumber:
-            table1.bg_table.blit(allnumber[int(i)], (x+15*digits, y+15))
+            table1.bg_table.blit(allnumber[int(i)], (x+dx+(15-1*len(cardnumber))*digits, y+15))
             digits += 1
         #牌牛頭數
         dx = 1.5*(7-int(card_dict[card]))#維持牛頭在中央
@@ -377,8 +381,9 @@ class table:#桌子類別
                 # self.bg_table.blit(num_font, (x, y+15))
                 cardnumber = str(card)
                 digits = 0#cardnumber的位數
+                dx = 7*(2-len(cardnumber))+2*len(cardnumber)#維持數字在中央
                 for i in cardnumber:
-                    self.bg_table.blit(allnumber[int(i)], (x+15*digits, y+15))
+                    self.bg_table.blit(allnumber[int(i)], (x+dx+(15-1*len(cardnumber))*digits, y+15))
                     digits += 1
                 dx = 1.5*(7-int(card_dict[card]))#維持牛頭在中央
                 for i in range(card_dict[card]):
