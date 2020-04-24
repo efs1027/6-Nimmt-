@@ -105,7 +105,6 @@ class System:
                             self.fade_to_title(1440, 720)
                         if result == "again":
                             self.fade_to_game(1440, 720)
-                            result = SelectMenu.StartGame(Name, IP)
                 elif Start_Game.isOver() and SelectMenu.show == False:
                     SelectMenu.ShowMenu()
                     if SelectMenu.Four:
@@ -379,8 +378,7 @@ class ModeSelectMenu(Menu):
         self.show = False
         if self.One:
             return OneP.play_easy(Name)
-        if self.Four:
-            os.system()
+        else:
             os.system(pythonpath + " four_player1.py " + IP + " " + Name)
             return "back"
 
