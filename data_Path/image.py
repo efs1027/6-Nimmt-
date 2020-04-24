@@ -83,6 +83,7 @@ table_desk = imagefloder + "table_desk.jpg"
 process_desk = imagefloder + "process_desk.jpg"
 poker = imagefloder + "poker.png"#卡背
 card_face = imagefloder + "card_face.png"#卡面
+# card_face = imagefloder + "card_face_big.png"#卡面
 
 #新手教學用的圖
 que = imagefloder + "que.png"#問號
