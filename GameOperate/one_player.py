@@ -374,7 +374,7 @@ class table:#桌子類別
                 if card == player1.selected_card:
                     player1.draw_hand(False)
                 row = lists.index(card)
-                x, y = 100+row*150, 20+col*75
+                x, y = 200+row*150, 20+col*75
                 # pg.draw.rect(self.bg_table, colors.WHITE, [x, y, 44, 60])
                 self.bg_table.blit(card_face, (x, y))
                 num_font = text.render(str(card), True, colors.BLACK)
