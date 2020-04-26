@@ -1,0 +1,14 @@
+h1{
+    color: aliceblue;
+    font-family: "Microsoft JhengHei";
+}
+h2{
+    font-family: "Microsoft JhengHei";
+}
+
+.cutline{
+    background-color:white;
+    height: 2px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
