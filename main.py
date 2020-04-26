@@ -36,6 +36,7 @@ ModeMenu = ModeMenu.convert()
 
 #新手教學用的圖片
 NTbg = pg.Surface(screen.get_size())
+NT0 = pg.image.load(image.NT0)
 NT1 = pg.image.load(image.NT1)
 NT2 = pg.image.load(image.NT2)
 NT3 = pg.image.load(image.NT3)
@@ -355,11 +356,12 @@ class ModeSelectMenu(Menu):
 
 class NewbieTeach(Menu):
     
-    def __init__ (self, bg, p1, p2, p3, p4):
-        self.page = 1
+    def __init__ (self, bg, p0, p1, p2, p3, p4):
+        self.page = 0
         self.show = False
         self.ClickBack = False
         self.bg = bg
+        self.page0 = p0
         self.page1 = p1
         self.page2 = p2
         self.page3 = p3
@@ -377,15 +379,20 @@ class NewbieTeach(Menu):
                 if event.type == pg.MOUSEBUTTONUP:
                     if self.nextpage.isOver() and self.page < 4:
                         self.page += 1
-                    elif self.previous.isOver() and self.page > 1:
+                    elif self.previous.isOver() and self.page > 0:
                         self.page -= 1
                     elif self.back.isOver():
                         self.ClickBack = True
-                        self.page = 1
-            if self.page == 1 and self.ClickBack != True:
+                        self.page = 0
+            if self.page == 0 and self.ClickBack != True:
+                self.bg.blit(self.page0, (0, 0))
+                self.back.draw()
+                self.nextpage.draw()
+            elif self.page == 1:
                 self.bg.blit(self.page1, (0, 0))
                 self.back.draw()
                 self.nextpage.draw()
+                self.previous.draw()
             elif self.page == 2:
                 self.bg.blit(self.page2, (0, 0))
                 self.back.draw()
@@ -413,7 +420,7 @@ def main():
     que = MenuButton(bg, image.que, image.que, image.que_position, (0, 0))
     BGMOption = BackGrondMusicMenu(SoundMenu, image.SoundMenuPosition, image.SoundMenuSize, BGM.MusicList, BGM.MusicStart, image.MusicMenu, image.MusicName)
     SelectMenu = ModeSelectMenu(ModeMenu, image.ModeMenuPosition, image.ModeMenuSize, image.OP, image.FP)
-    NT = NewbieTeach(NTbg, NT1, NT2, NT3, NT4)
+    NT = NewbieTeach(NTbg, NT0, NT1, NT2, NT3, NT4)
     BGMOption.PlayBGM()
     while True:
         while OperateSystem.Title(Start_Game, Close_Game, BGMMenuOpen, BGMOption, SelectMenu, que, NT):

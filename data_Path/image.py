@@ -87,6 +87,7 @@ card_face = imagefloder + "card_face.png"#卡面
 
 #新手教學用的圖
 que = imagefloder + "que.png"#問號
+NT0 = imagefloder + "NT0.jpg"#第零頁
 NT1 = imagefloder + "NT1.jpg"#新手教學背景
 NT2 = imagefloder + "NT2.jpg"#第二頁
 NT3 = imagefloder + "NT3.jpg"#第三頁

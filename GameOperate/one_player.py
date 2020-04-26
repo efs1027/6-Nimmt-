@@ -104,7 +104,6 @@ class computer:#電腦類別
         self.bg_hand.blit(poker, (x, y))
         if display:
             self.bg_hand.blit(card_face, (x, y))
-            num_font = text.render(str(card), True, colors.BLACK)
             cardnumber = str(card)
             digits = 0#cardnumber的位數
             dx = 7*(2-len(cardnumber))+2*len(cardnumber)#維持數字在中央
