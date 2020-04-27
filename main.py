@@ -385,10 +385,11 @@ class ModeSelectMenu(Menu):
 class NewbieTeach(Menu):
     
     def __init__ (self):
-        self.page = 1
+        self.page = 0
         self.show = False
         self.ClickBack = False
         self.bg = pg.Surface((1440, 720))
+        self.page0 = pg.image.load(image.NT0)
         self.page1 = pg.image.load(image.NT1)
         self.page2 = pg.image.load(image.NT2)
         self.page3 = pg.image.load(image.NT3)
@@ -410,8 +411,11 @@ class NewbieTeach(Menu):
                         self.page -= 1
                     elif self.back.isOver():
                         self.ClickBack = True
-                        self.page = 1
-            if self.page == 1 and self.ClickBack != True:
+            if self.page == 0 and self.ClickBack != True:
+                self.bg.blit(self.page0, (0, 0))
+                self.back.draw()
+                self.nextpage.draw()
+            elif self.page == 1:
                 self.bg.blit(self.page1, (0, 0))
                 self.back.draw()
                 self.nextpage.draw()
@@ -431,6 +435,8 @@ class NewbieTeach(Menu):
                 self.previous.draw()
             screen.blit(self.bg, (0 ,0))
             pg.display.update()
+            if self.ClickBack:
+                self.page = 0
 
 class AdressInputMenu(Menu):
     
