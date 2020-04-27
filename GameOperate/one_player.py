@@ -14,9 +14,6 @@ size = width, height = 1440, 720
 sc = pg.display.set_mode(size)
 bg_process = pg.Surface((300, 50))#遊戲進程區塊背景
 desk = pg.image.load(image.desk)
-com1_desk = pg.image.load(image.com1_desk)
-com2_desk = pg.image.load(image.com2_desk)
-com3_desk = pg.image.load(image.com3_desk)
 player1_desk = pg.image.load(image.player1_desk)
 table_desk = pg.image.load(image.table_desk)
 process_desk = pg.image.load(image.process_desk)
@@ -104,7 +101,6 @@ class computer:#電腦類別
         self.bg_hand.blit(poker, (x, y))
         if display:
             self.bg_hand.blit(card_face, (x, y))
-            num_font = text.render(str(card), True, colors.BLACK)
             cardnumber = str(card)
             digits = 0#cardnumber的位數
             dx = 7*(2-len(cardnumber))+2*len(cardnumber)#維持數字在中央
