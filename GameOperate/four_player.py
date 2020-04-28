@@ -470,8 +470,6 @@ def play(ID, IP):
 
     @sio.event
     def connect():
-        global error
-        error = False
         print("I'm connected!")
     @sio.event
     def connect_error():
@@ -493,6 +491,8 @@ def play(ID, IP):
             d = data["choosebase"].pop(PlayerID)
             data["choosebase"].append(d)
         print(data)
+        global error
+        error = False
     
     while error:
         AntiCrash()
