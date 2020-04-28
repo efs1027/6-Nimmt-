@@ -205,15 +205,15 @@ class player:#玩家類別
             if a == "NULL":
                 if event.type == pg.KEYDOWN:#查看所有按鍵事件
                     if event.key == pg.K_LEFT:#按左鍵的時候，選取左一個的牌
-                        if card_num != 0:
-                            card_num-=1
+                        if self.card_num != 0:
+                            self.card_num-=1
                         else:
-                            card_num = len(self.card)-1
+                            self.card_num = len(self.card)-1
                     if event.key == pg.K_RIGHT:#按右鍵的時候，選取右一個的牌 # 這裡要-1
-                        if card_num != len(self.card)-1:
-                            card_num+=1
+                        if self.card_num != len(self.card)-1:
+                            self.card_num+=1
                         else:
-                            card_num = 0
+                            self.card_num = 0
                     if event.key == pg.K_RETURN:#按Enter時 
                         self.selected_card = self.card[self.card_num]
                         #從手牌list中移除選擇的牌
