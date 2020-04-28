@@ -5,7 +5,7 @@ import pygame as pg, pygame_textinput, socketio, os, sys, add_module_path as Mod
 pythonpath = sys.path[4]+"\\python.exe"
 
 ModAdd.path_append()
-import color as colors, image, BGM, one_player as OneP
+import color as colors, image, BGM, one_player as OneP, four_player as FourP
 
 from sys import exit
 
@@ -379,8 +379,8 @@ class ModeSelectMenu(Menu):
         if self.One:
             return OneP.play_easy(Name)
         else:
-            os.system(pythonpath + " four_player1.py " + IP + " " + Name)
-            return "back"
+            #os.system(pythonpath + " four_player1.py " + IP + " " + Name)
+            return FourP.play(Name, IP)
 
 class NewbieTeach(Menu):
     

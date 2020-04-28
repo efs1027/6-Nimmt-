@@ -6,7 +6,7 @@ eel.init('web')
 @eel.expose
 def open_muti(ip,username):
     print(f"開啟多人遊戲函式已被呼叫 傳入值{ip} {username}")
-    os.system(pythonpath + " four_player.py " + ip + " " + username)
+    os.system(pythonpath + " four_player1.py " + ip + " " + username)
 
 @eel.expose
 def open_solo():

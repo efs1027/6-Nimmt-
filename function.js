@@ -1,6 +1,9 @@
-document.cookie="SameSite=None"
+
 var audio = document.createElement("audio");
 
+window.onload=function(){
+    $("#bversion").text(navigator.userAgen);
+}
 
 function boxdown(){
     if(event.keyCode == 13) {
@@ -16,5 +19,5 @@ function solo(){
     alert("呼叫sole fn")
 }
 function muti(){
-    alert("呼叫muti fn")
+    Swal.fire('Any fool can use a computer');
 }

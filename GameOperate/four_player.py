@@ -5,46 +5,16 @@
     更酷的特效!!!
 """
 # -*- coding: utf-8 -*-
-import pygame as pg, random, sys
+import pygame as pg, random
 import color as colors, image as image
 import socketio
 
 data = {}
-error = False
-PlayerID = "NULL"
-
-@sio.event
-def connect():
-    global error
-    error = False
-    print("I'm connected!")
-@sio.event
-def connect_error():
-    global error
-    error = True
-    print("The connection failed!")
-@sio.event
-def tablejson(Input):
-    global data
-    global PlayerID
-    data = Input
-    if PlayerID != "NULL":
-        a = data["score"].pop(PlayerID)
-        data["score"].append(a)
-        b = data["hand"].pop(PlayerID)
-        data["hand"].append(b)
-        c = data["facecard"].pop(PlayerID)
-        data["facecard"].append(c)
-        d = data["choosebase"].pop(PlayerID)
-        data["choosebase"].append(d)
-    print(data)
 
 pg.init()
 
 size = width, height = 1440, 720
 sc = pg.display.set_mode(size)
-# bg_hand = pg.Surface((600, 200))#手牌區塊背景
-# bg_table = pg.Surface((800, 320))#桌面區塊背景
 bg_process = pg.Surface((300, 50))#遊戲進程區塊背景
 desk = pg.image.load(image.desk)
 com1_desk = pg.image.load(image.com1_desk)
@@ -56,6 +26,23 @@ process_desk = pg.image.load(image.process_desk)
 sc.blit(desk, (0, 0))
 text = pg.font.SysFont("Arial", 24)
 process_text = pg.font.Font("Chinese.ttf", 24)#24
+poker = pg.image.load(image.poker)
+card_face = pg.image.load(image.card_face)
+bull_big = pg.image.load(image.bull_big)
+bull_small = pg.image.load(image.bull_small)
+
+number1 = pg.image.load(image.number1)
+number2 = pg.image.load(image.number2)
+number3 = pg.image.load(image.number3)
+number4 = pg.image.load(image.number4)
+number5 = pg.image.load(image.number5)
+number6 = pg.image.load(image.number6)
+number7 = pg.image.load(image.number7)
+number8 = pg.image.load(image.number8)
+number9 = pg.image.load(image.number9)
+number0 = pg.image.load(image.number0)
+allnumber = [number0, number1, number2, number3, number4, number5, number6, number7, number8, number9]
+
 
 card_base = [1]
 card_dict = {1 : 1} 
@@ -82,10 +69,11 @@ for i in range (2, 105, 1):
 
 class computer:#電腦類別
 
-    def __init__(self, Name, card):#設定基本資料
+    def __init__(self, num, card, Name):#設定基本資料
         self.num = int(num) - 1
-        self.name = Name#設定名稱
-        self.card = card#設定手牌
+        self.name = "電腦" + num#設定電腦名稱
+        self.realname = Name
+        self.card = card#設定電腦手牌
         self.selected_card = 0 # 被選中的牌初始化
         self.bg_hand = pg.Surface((600, 200))#設定區塊
         self.bull = 0#分數初始化
@@ -121,18 +109,25 @@ class computer:#電腦類別
         
     def draw_throw(self, card, display):
         if str(self.name) == "電腦1":
-            SITE = (1240, 60)
+            SITE = (1040, 60) #(1240, 60)
         if str(self.name) == "電腦2":
             SITE = (420, 0)
         if str(self.name) == "電腦3":
-            SITE = (0, 60)
+            SITE = (200, 60) #(0, 60)
         x, y = 278, 20
-        pg.draw.rect(self.bg_hand, colors.WHITE, [x, y, 44, 60])
+        self.bg_hand.blit(poker, (x, y))
         if display:
-            num_font = text.render(str(card), True, colors.BLACK) 
-            self.bg_hand.blit(num_font, (x, y+15))
+            self.bg_hand.blit(card_face, (x, y))
+            num_font = text.render(str(card), True, colors.BLACK)
+            cardnumber = str(card)
+            digits = 0#cardnumber的位數
+            dx = 7*(2-len(cardnumber))+2*len(cardnumber)#維持數字在中央
+            for i in cardnumber:
+                self.bg_hand.blit(allnumber[int(i)], (x+dx+(15-1*len(cardnumber))*digits, y+15))
+                digits += 1
+            dx = 3*(7-int(card_dict[card]))#維持牛頭在中央
             for i in range(card_dict[card]):
-                pg.draw.circle(self.bg_hand, colors.RED, (x+6+i*6, y+6), 2)
+                self.bg_hand.blit(bull_small, (x+dx+i*6, y+3))
         #旋轉區塊
         num = self.name.split("電腦",1)#從名字分割出編號
         new_bg_hand = pg.transform.rotate(self.bg_hand, 90*int(num[-1]))
@@ -143,17 +138,18 @@ class computer:#電腦類別
     def draw_hand(self, gradually):#手牌
         SITE = (0,0)#絕對座標
         if str(self.name) == "電腦1":
-            SITE = (1240, 60)
-            self.bg_hand.blit(com1_desk, (0,0))
+            SITE = (1040, 60) #(1240, 60)
         if str(self.name) == "電腦2":
             SITE = (420, 0)
-            self.bg_hand.blit(com2_desk, (0,0))
         if str(self.name) == "電腦3":
-            SITE = (0, 60)
-            self.bg_hand.blit(com3_desk, (0,0))
+            SITE = (200,60) #(0, 60)
+        num = self.name.split("電腦",1)#從名字分割出編號
+        new_bg_hand = pg.transform.rotate(self.bg_hand, 90*int(num[-1]))
+        new_bg_hand.blit(desk, (0-SITE[0], 0-SITE[1]))
+        self.bg_hand = pg.transform.rotate(new_bg_hand, -90*int(num[-1]))
         #玩家總牛頭數
         x, y = 550, 50
-        pg.draw.circle(self.bg_hand, colors.RED, (x, y), 10)
+        self.bg_hand.blit(bull_big, (x-40, y-10))
         num_font = text.render(str(self.bull), True, colors.RED)
         self.bg_hand.blit(num_font, (x+10, y))
         for card in self.card:
@@ -161,7 +157,7 @@ class computer:#電腦類別
             n = self.card.index(card) 
             dx = 26*(10-len(self.card))#偏移
             x, y = 55+dx+n*50, 120#相對座標
-            pg.draw.rect(self.bg_hand, colors.WHITE, [x, y, 44, 60])
+            self.bg_hand.blit(poker, (x, y))
             #旋轉區塊
             num = self.name.split("電腦",1)#從名字分割出編號
             new_bg_hand = pg.transform.rotate(self.bg_hand, 90*int(num[-1]))
@@ -169,7 +165,7 @@ class computer:#電腦類別
             if gradually:
                 pg.display.update()
                 pg.time.delay(20)
-        if len(self.card) == 0:
+        if len(self.card) == 0: #無牌可出時
             num = self.name.split("電腦",1)#從名字分割出編號
             new_bg_hand = pg.transform.rotate(self.bg_hand, 90*int(num[-1]))
             sc.blit(new_bg_hand, SITE)
@@ -209,15 +205,15 @@ class player:#玩家類別
             if a == "NULL":
                 if event.type == pg.KEYDOWN:#查看所有按鍵事件
                     if event.key == pg.K_LEFT:#按左鍵的時候，選取左一個的牌
-                        if self.card_num != 0:
-                            self.card_num-=1
+                        if card_num != 0:
+                            card_num-=1
                         else:
-                            self.card_num = len(self.card)-1
+                            card_num = len(self.card)-1
                     if event.key == pg.K_RIGHT:#按右鍵的時候，選取右一個的牌 # 這裡要-1
-                        if self.card_num != len(self.card)-1:
-                            self.card_num+=1
+                        if card_num != len(self.card)-1:
+                            card_num+=1
                         else:
-                            self.card_num = 0
+                            card_num = 0
                     if event.key == pg.K_RETURN:#按Enter時 
                         self.selected_card = self.card[self.card_num]
                         #從手牌list中移除選擇的牌
@@ -268,12 +264,18 @@ class player:#玩家類別
 
     def draw_throw(self, card):
         x, y = 278, 20
-        pg.draw.rect(self.bg_hand, colors.WHITE, [x, y, 44, 60])
-        num_font = text.render(str(card), True, colors.BLACK) 
-        self.bg_hand.blit(num_font, (x, y+15))
+        self.bg_hand.blit(card_face, (x, y))
+        num_font = text.render(str(card), True, colors.BLACK)
+        cardnumber = str(card)
+        digits = 0#cardnumber的位數
+        dx = 7*(2-len(cardnumber))+2*len(cardnumber)#維持數字在中央
+        for i in cardnumber:
+            self.bg_hand.blit(allnumber[int(i)], (x+dx+(15-1*len(cardnumber))*digits, y+15))
+            digits += 1
         if card != False:
+            dx = 3*(7-int(card_dict[card]))#維持牛頭在中央
             for i in range(card_dict[card]):
-                pg.draw.circle(self.bg_hand, colors.RED, (x+6+i*6, y+6), 2)
+                self.bg_hand.blit(bull_small, (x+dx+i*6, y+3))
         sc.blit(self.bg_hand, (420, 520))
 
     def draw_hand(self, gradually):#手牌
@@ -281,20 +283,26 @@ class player:#玩家類別
         self.bg_hand.blit(player1_desk, (0, 0))
         #玩家總牛頭數
         x, y = 550, 50
-        pg.draw.circle(self.bg_hand, colors.RED, (x, y),10)
+        self.bg_hand.blit(bull_big, (x-50, y-10))
         num_font = text.render(str(self.bull), True, colors.RED)
-        self.bg_hand.blit(num_font, (x+10, y))
+        self.bg_hand.blit(num_font, (x, y))
         for card in self.card:
             #手牌
             n = self.card.index(card) 
             dx = 26*(10-len(self.card))#維持手牌在中央
             x, y = 55+dx+n*50, 120#相對座標
-            pg.draw.rect(self.bg_hand, colors.WHITE, [x, y, 44, 60])
+            self.bg_hand.blit(card_face, (x, y))
             num_font = text.render(str(card), True, colors.BLACK)
-            self.bg_hand.blit(num_font, (x, y+15))
+            cardnumber = str(card)
+            digits = 0#cardnumber的位數
+            dx = 7*(2-len(cardnumber))+2*len(cardnumber)#維持數字在中央
+            for i in cardnumber:
+                self.bg_hand.blit(allnumber[int(i)], (x+dx+(15-1*len(cardnumber))*digits, y+15))
+                digits += 1
             #牌牛頭數
+            dx = 3*(7-int(card_dict[card]))#維持牛頭在中央
             for i in range(card_dict[card]):
-                pg.draw.circle(self.bg_hand, colors.RED, (x+6+i*6, y+6), 2)
+                self.bg_hand.blit(bull_small, (x+dx+i*6, y+3))
             #畫布印上sc
             sc.blit(self.bg_hand, (420, 520))
             if gradually:
@@ -322,12 +330,18 @@ class player:#玩家類別
         for card in col:
             row = col.index(card)
             x, y = 300+row*50, 20+list_num*75
-        pg.draw.rect(table1.bg_table, colors.WHITE, [x, y, 44, 60])
-        num_font = text.render(str(self.selected_card), True, colors.BLACK) 
-        table1.bg_table.blit(num_font, (x, y+15))
+        table1.bg_table.blit(card_face, (x, y))
+        num_font = text.render(str(self.selected_card), True, colors.BLACK)
+        cardnumber = str(self.selected_card)
+        digits = 0#cardnumber的位數
+        dx = 7*(2-len(cardnumber))+2*len(cardnumber)#維持數字在中央
+        for i in cardnumber:
+            table1.bg_table.blit(allnumber[int(i)], (x+dx+(15-1*len(cardnumber))*digits, y+15))
+            digits += 1
         #牌牛頭數
+        dx = 3*(7-int(card_dict[card]))#維持牛頭在中央
         for i in range(card_dict[self.selected_card]):
-            pg.draw.circle(table1.bg_table, colors.RED, (x+6+i*6, y+6), 2)
+            table1.bg_table.blit(bull_small, (x+dx+i*6, y+3))
         sc.blit(table1.bg_table, (320, 200))
         
 class table:#桌子類別
@@ -373,11 +387,17 @@ class table:#桌子類別
                     player1.draw_hand(False)
                 row = lists.index(card)
                 x, y = 250+row*50, 20+col*75
-                pg.draw.rect(self.bg_table, colors.WHITE, [x, y, 44, 60])
+                self.bg_table.blit(card_face, (x, y))
                 num_font = text.render(str(card), True, colors.BLACK)
-                self.bg_table.blit(num_font, (x, y+15))
+                cardnumber = str(card)
+                digits = 0#cardnumber的位數
+                dx = 7*(2-len(cardnumber))+2*len(cardnumber)#維持數字在中央
+                for i in cardnumber:
+                    self.bg_table.blit(allnumber[int(i)], (x+dx+(15-1*len(cardnumber))*digits, y+15))
+                    digits += 1
+                dx = 3*(7-int(card_dict[card]))#維持牛頭在中央
                 for i in range(card_dict[card]):
-                    pg.draw.circle(self.bg_table, colors.RED, (x+6+i*6, y+6), 2)
+                    self.bg_table.blit(bull_small, (x+dx+i*6, y+3))
                 sc.blit(self.bg_table, (320, 200))
                 if gradually:
                     pg.display.update() 
@@ -432,13 +452,51 @@ def assign():#發牌
             pg.draw.rect(sc, colors.WHITE, [centerx+ds*n*2-7, centery, 60, 44])#right
             pg.display.update()
 
-def play(Name, IP):
-    address = IP
-    sio = socketio.Client()
-    sio.connect(address)
+def play(ID, IP):
     global data
     global PlayerID
     global error
+
+    try:
+        address = IP
+        sio = socketio.Client()
+        sio.connect(address)
+    except:
+        pass
+
+    data = {}
+    error = True
+    PlayerID = "NULL"
+
+    @sio.event
+    def connect():
+        global error
+        error = False
+        print("I'm connected!")
+    @sio.event
+    def connect_error():
+        global error
+        error = True
+        print("The connection failed!")
+    @sio.event
+    def tablejson(Input):
+        global data
+        global PlayerID
+        data = Input
+        if PlayerID != "NULL":
+            a = data["score"].pop(PlayerID)
+            data["score"].append(a)
+            b = data["hand"].pop(PlayerID)
+            data["hand"].append(b)
+            c = data["facecard"].pop(PlayerID)
+            data["facecard"].append(c)
+            d = data["choosebase"].pop(PlayerID)
+            data["choosebase"].append(d)
+        print(data)
+    
+    while error:
+        AntiCrash()
+
     sc.blit(desk, (0, 0))
     start_stage = True
     game_keep_going = False
@@ -448,15 +506,12 @@ def play(Name, IP):
     if start_stage:
         turn = 0
         sio.emit('login',ID)
+        print(error)
         while len(data["players"]) < 4:
             AntiCrash()
             process_font("等待其他玩家", turn)
             if ID in data["players"]:
                 PlayerID = data["players"].index(ID)
-            if data["players"] == 4:
-                com1Name = data["players"][0]
-                com2Name = data["players"][1]
-                com3Name = data["players"][2]
         #發牌給電腦及玩家
         numlist = [0, 1, 2, 3]
         numlist.remove(PlayerID)
@@ -465,10 +520,10 @@ def play(Name, IP):
         player_card.sort()
         #設置電腦與玩家數值
         global table1, com1, com2, com3, player1
-        com1 = computer(com1Name, hands[0])
-        com2 = computer(com2Name, hands[1])
-        com3 = computer(com3Name, hands[2])
-        player1 = player(player_card, PlayerID, Name)
+        com1 = computer("1", hands[0], data["players"][0])
+        com2 = computer("2", hands[1], data["players"][1])
+        com3 = computer("3", hands[2], data["players"][2])
+        player1 = player(player_card, PlayerID, ID)
         #翻開四張牌擺在桌上
         listgroup = data["base"]
         #設置桌面數值
@@ -623,7 +678,7 @@ def play(Name, IP):
     player1.count_bull()
     pg.time.delay(500)
     #比較
-    Score_Name = [[player1.bull, player1.name], [com1.bull, com1.name], [com2.bull, com2.name], [com3.bull, com3.name]]
+    Score_Name = [[player1.bull, player1.name], [com1.bull, com1.realname], [com2.bull, com2.realname], [com3.bull, com3.realname]]
     Score_list = [player1.bull, com1.bull, com2.bull, com3.bull]
     result = []
     Score_list.sort()

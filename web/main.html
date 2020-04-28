@@ -3,34 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
     <script
   src="http://code.jquery.com/jquery-3.4.1.min.js"
   integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
   crossorigin="anonymous"></script>
-  <script src="function.js"></script>
+  <script type="text/javascript" src="/eel.js"></script>
+  <link rel="stylesheet" href="dark.css">
+  <script src="sweetalert2.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <link rel="stylesheet" href="style.css">
+    <script src="function.js"></script>
     <title>Document</title>
 <script>
 document.cookie="SameSite=None"
 // var socket = new io("http://25.72.61.125:8070");
 // var socket = new Object()
 
-function connect(){
-    console.log("RE")
-    if(event.keyCode == 13) {
-        ip=$("#ipbox").val();
-        socket =  io(ip);
-        $(spinner).css({"visibility": "visible"});
+function fn_connect(ipAddr){
+    console.log("進入連線fn 傳入值"+ipAddr)
+    // if(event.keyCode == 13) {
+    //     ip=$("#ipbox").val();
+    //     socket =  io(ipAddress);
+    //     // $(spinner).css({"visibility": "visible"});
         
-    }
+    // }
+    socket =  io(ipAddr);
+
     socket.on("tablejson",function(data){
         console.log(data)
-        $("#plist").text(JSON.stringify(data));
+        msg=data.players
+        $("#plist").text(msg);
     })
     socket.on('connect', function () {
-        $(spinner).css({"visibility": "hidden"});
+        $(footer).css({"visibility": "visible"});
+        if(isconnected==false){
+            isconnected=true;
+            timedate= new Date()
+            footer_text=ipAddr+"   已成功建立連線   "+timedate;
+            $(footer).text(footer_text);
+        }
+        
     });
 
 }
@@ -44,26 +58,29 @@ function connect(){
         <div style="margin-top: 30vh;">
             <h1 id="plsenter">請輸入你的暱稱</h1>
             <input id="namebox" class="form-control" type="text" onkeydown="boxdown();" style="width: 30vw;margin-left: auto;margin-right: auto;">
+            <h5 style="position: absolute;right: 0px;bottom: 0px;" id="bversion"></h5>
         </div>
     </div>
     <div>
         <h1>單人遊戲</h1>
         <div class="cutline"></div>
-        <button type="button" class="btn btn-outline-light btn-lg" onclick="solo();"><h2>點我開始</h2></button>
+        <button id="btn_join" type="button" class="btn btn-outline-light btn-lg" onclick="solo();"><h2>點我開始</h2></button>
         <h1>多人遊戲</h1>
         <div class="cutline"></div>
         <div>
-        <input id="ipbox" placeholder="輸入伺服器位置" class="form-control" type="text" onkeydown="connect();" style="width: 30vw;">
+        <!-- <input id="ipbox" placeholder="輸入伺服器位置" class="form-control" type="text" onkeydown="connect();" style="width: 30vw;"> -->
             <div id="spinner" class="spinner-border text-primary" role="status" style="visibility:hidden;">
                 <span class="sr-only">Loading...</span>
             </div>
             
         </div>
-        <button type="button" class="btn btn-outline-light btn-lg" onclick="muti();"><h2>多人遊戲</h2></button>
+        <button type="button" class="btn btn-outline-light btn-lg" onclick="btn_connect();"><h2>連線</h2></button>
+        <button type="button" class="btn btn-outline-light btn-lg" onclick="muti();"><h2>加入多人遊戲</h2></button>
         <div style="text-align: center;">
             <h1>玩家列表<div id="plist"></div></h1>
             
         </div>
+        <div id="footer" style="visibility: hidden;width: 100vw;position: fixed;height: 20px;;bottom: 0px;background-color: limegreen;"></div>
     </div>
 </body>
 </html>
