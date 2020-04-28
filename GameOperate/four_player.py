@@ -183,6 +183,7 @@ class player:#玩家類別
         self.card_num = 0
 
     def get_card(self, table, list_num, card_num):#收回卡片#card_num為玩家選的卡
+        global sio
         if len(self.point_card) == 1:
             card_list = table1.list_give_player(list_num, card_num)#由函數取得該列並置換排頭
             self.point_card = card_list
@@ -201,6 +202,7 @@ class player:#玩家類別
             self.bull += card_dict[num]
             
     def select_card(self, a):#選擇卡片
+        global sio
         for event in pg.event.get():#遍歷所有事件
             if a == "NULL":
                 if event.type == pg.KEYDOWN:#查看所有按鍵事件
@@ -354,6 +356,7 @@ class table:#桌子類別
         global data
         global PlayerID
         global error
+        global sio
         num = OtherNum.split("com", 1)
         if ThisComputer:
             while error:
@@ -459,6 +462,7 @@ def play(ID, IP):
 
     try:
         address = IP
+        global sio
         sio = socketio.Client()
         sio.connect(address)
     except:
