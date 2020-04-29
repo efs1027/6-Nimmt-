@@ -484,6 +484,7 @@ def play(ID, IP):
     def tablejson(Input):
         global data
         global PlayerID
+        global error
         data = Input
         if PlayerID != "NULL":
             a = data["score"].pop(PlayerID)
@@ -495,7 +496,6 @@ def play(ID, IP):
             d = data["choosebase"].pop(PlayerID)
             data["choosebase"].append(d)
         print(data)
-        global error
         error = False
     
     while error:

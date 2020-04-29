@@ -15,7 +15,6 @@ pg.init()
 pg.display.set_caption("請輸入暱稱")
 size = width, height = 250, 50  # 設定視窗大小
 screen = pg.display.set_mode(size)  # 顯示視窗
-Name = "player1"
 textinput = pygame_textinput.TextInput()
 clock = pg.time.Clock()
 entered = False
