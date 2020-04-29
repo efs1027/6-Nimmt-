@@ -88,6 +88,7 @@ io.on('connection', function(socket){
       console.log(name,ac,card);
 
       if (table.status==1){
+        table.choosebase=["NULL","NULL","NULL","NULL"];
         if(ac==1&&name>=0 && name<=3 && table.facecard[name]==0){
           console.log(table.hand[data.name]);
           if (table.hand[name].indexOf(Number(card))!=-1){
@@ -97,7 +98,6 @@ io.on('connection', function(socket){
             io.emit('newmsg', msg);
 
               if(table.facecard.indexOf(0)==-1){
-                table.choosebase=["NULL","NULL","NULL","NULL"];
                 table.status=2;
               }
           }
