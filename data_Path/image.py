@@ -6,6 +6,7 @@ imagefloder = up + "/image/"
 title_sence = imagefloder + "title_sence.jpg"#標題畫面背景位置
 desk = imagefloder + "desk.jpg"#桌子
 fade_back =  imagefloder + "fade_back.jpg"#假的標題畫面
+logo = imagefloder + "logo.jpg"
 
 #標題畫面用的按鈕
 start_game = imagefloder + "start_game_buttom.png"#開始遊戲按鍵
