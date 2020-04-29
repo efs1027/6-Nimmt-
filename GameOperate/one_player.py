@@ -118,9 +118,12 @@ class computer:#電腦類別
         new_bg_hand = pg.transform.rotate(self.bg_hand, 90*int(num[-1]))
         sc.blit(new_bg_hand, SITE)
         if card != False and display != True:#出牌階段延遲，亮牌階段不延遲
-            pg.time.delay(50)#500
+            pg.time.delay(500)#500
 
     def draw_hand(self, gradually):#手牌
+        pg.mixer.music.load('C:/Users/User/Desktop/6-Nimmt-/sound/shuffle.m')
+        pg.mixer.music.play(0)
+
         SITE = (0,0)#絕對座標
         if str(self.name) == "電腦1":
             SITE = (1040, 60) #(1240, 60)
@@ -372,7 +375,7 @@ class table:#桌子類別
                 sc.blit(self.bg_table, (320, 200))
                 if gradually:
                     pg.display.update() 
-                    pg.time.delay(10) #40
+                    pg.time.delay(40) #40
 
 class MenuButton:#按鈕類
 
