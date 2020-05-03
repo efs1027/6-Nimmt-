@@ -682,7 +682,7 @@ def play(ID, IP):
     player1.count_bull()
     pg.time.delay(500)
     #比較
-    Score_Name = [[player1.bull, player1.name], [com1.bull, com1.realname], [com2.bull, com2.realname], [com3.bull, com3.realname]]
+    Score_Name = [[player1.bull, player1.name], [com1.bull, data["players"][0]], [com2.bull, data["players"][1]], [com3.bull, data["players"][2]]]
     Score_list = [player1.bull, com1.bull, com2.bull, com3.bull]
     result = []
     Score_list.sort()
