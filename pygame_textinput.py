@@ -27,7 +27,8 @@ class TextInput:
             cursor_color=(0, 0, 1),
             repeat_keys_initial_ms=400,
             repeat_keys_interval_ms=35,
-            max_string_length=-1):
+            max_string_length=-1,
+            cursor_position = 0):
         """
         :param initial_string: Initial text to be displayed
         :param font_family: name or list of names for font (see pygame.font.match_font for precise format)
@@ -64,7 +65,7 @@ class TextInput:
         # Things cursor:
         self.cursor_surface = pygame.Surface((int(self.font_size / 20 + 1), self.font_size))
         self.cursor_surface.fill(cursor_color)
-        self.cursor_position = len(initial_string)  # Inside text
+        self.cursor_position = len(initial_string) + cursor_position  # Inside text
         self.cursor_visible = True  # Switches every self.cursor_switch_ms ms
         self.cursor_switch_ms = 500  # /|\
         self.cursor_ms_counter = 0

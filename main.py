@@ -93,6 +93,8 @@ class System:
                     IP = AdressInput.Inputbox.get_text()
                     self.fade_to_game(1440, 720)
                     SelectMenu.show = False
+                    AdressInput.show = False
+                    AdressInput.activate = False
                     go = True
                     while go:
                         result = SelectMenu.StartGame(Name, IP)
@@ -446,7 +448,7 @@ class AdressInputMenu(Menu):
         self.position = position
         self.bg = pg.Surface(self.size)
         self.InputDisplyer = pg.Surface((self.size[0]-20, 40))
-        self.Inputbox = pygame_textinput.TextInput("http://:8070/", "Chinese.ttf", 25, True, colors.BLACK, colors.BLACK, 400, 35, 60)
+        self.Inputbox = pygame_textinput.TextInput("http://:8070/", "Chinese.ttf", 25, True, colors.BLACK, colors.BLACK, 400, 35, 60, -6)
         self.font = pg.font.Font("Chinese.ttf", 24)
         self.text = self.font.render("請輸入IP位址", True, colors.WHITE)
 
