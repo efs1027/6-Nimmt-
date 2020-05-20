@@ -12,6 +12,7 @@
 *   FileTest.py是測試檔案處理用的
 *   add_module_path.py為增加模組尋找路徑用，但不知為何一直沒有效果，所以data_Path才會是Package = =
 *   PlayerFile和RoomFile為存放各種檔案的地方，沒事的話別動
+*   遊玩前請於編譯器下載pygame、pyhton-socketio、requests
 * 參考資料:
     https://www.youtube.com/watch?v=wqRlKVRUV_k&list=PL-g0fdC5RMboYEyt6QS2iLb_1m7QcgfHk
     https://www.cnblogs.com/srl-southern/p/4949624.html
