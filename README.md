@@ -2,7 +2,7 @@
 
 # 事項
 * 若需要測試請將project資料夾下載到C槽
-* 所有程式碼皆使用Visual Studio Code編成
+* 所有程式碼皆使用Visual Studio Code編寫
 * 影像檔案放在image資料夾，內含jpg,png以及用於再編輯的psd檔
 *   BackGroundMusic，用於存放背景音樂檔，請後來加的音樂照著"musicx"命名原則加入，檔案格式一律為ogg檔
 *   圖片路徑字串、背景音樂路徑字串以及顏色變數皆放於名為data_Path的資料夾中
